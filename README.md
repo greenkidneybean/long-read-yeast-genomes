@@ -1,1 +1,1 @@
-# pacbio-yeast-genomes
+# README
