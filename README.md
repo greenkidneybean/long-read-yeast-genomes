@@ -13,7 +13,7 @@ Reads listed like:
 name: 1, member: 3003_G1_44
 ```
 
-Where `3003_G1_44` describes the cross.
+Where `3003_G1_44` describes the cross (`3003`) and segregant (`G1_44`)
 
 
 ## Download `sra-toolkit` 
@@ -26,19 +26,12 @@ rm sratoolkit.3.0.0-ubuntu64.tar.gz
 
 mv sratoolkit.3.0.0-ubuntu64 sra
 
-sra/bin/vdb-config --interactive
+sra/bin/vdb-config --restore-defaults
 ```
 
 ## Retrieve reads
 Use sra-toolkit to retrieve the desired reads in compressed format
 ```bash
 acc='SRR9330809'
-sra/bin/sam-dump  ${acc} > ${acc}.sam
-awk '!/^ *@/ { print $10,$11,$12 }' ${acc}.sam > ${acc}.reads
-
+sra/bin/sam-dump  --gzip ${acc} > ${acc}.sam.gz
 ```
-
-## TODO:
-
-1. make file that contains ACCESSION `\t` Mating Scheme
-2. iterate through said file, retrieving accession and saving as `${scheme}.reads`
