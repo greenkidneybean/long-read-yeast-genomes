@@ -129,60 +129,20 @@ bash src/get-blast.sh
 rclone copy nihbox:/cloud/pacbio-yeast-genomes/header-3003.txt data/
 ```
 
+## Make blast database
 ```bash
-
-```
-
-
-```bash
-cross="3003"
-evalue="1e-10"
-repoPath=${PWD}
-plate="G1"
-well="02"
-dbFasta="telomeric-SUC.fasta"
-
 # make blast database for telomeric sequences
-${repoPath}/blast/bin/makeblastdb -dbtype nucl -in "${repoPath}/data/${dbFasta}"
-
-function makeFastaDoBlast() {
-    cross=${1}
-    plate=${2}
-    well=${3}
-    repoPath=${4}
-    evalue=${5}
-    dbFasta=${6}
-    sample="${plate}_${well}"
-
-    cd ${repoPath}/tmp
-
-    samtools fasta \
-    -1 ${cross}_${sample}.fasta \
-    -2 ${cross}_${sample}.fasta \
-    -0 ${cross}_${sample}.fasta \
-    -s ${cross}_${sample}.fasta \
-    <(cat ${repoPath}/data/header-${cross}.txt <(unzip -p ${repoPath}/data/${cross}.sam.zip ${cross}_${sample}.sam))
-
-    # run blastn
-    ${repoPath}/blast/bin/blastn -outfmt 6 -query ${cross}_${sample}.fasta -db ${repoPath}/data/${dbFasta} | awk -v query="${cross}_${sample}" -v db="${dbFasta}" '{OFS="\t"; print query,db,$0}' >> ${repoPath}/tmp/${cross}_${sample}.blast
-
-    # count number of lines
-    nReads=$(wc -l ${cross}_${sample}.fasta | awk '{print $1}')
-    let nReads=${nReads}/2
-
-    echo -e "${cross}_${sample}\t${nReads}" >> ${repoPath}/tmp/${cross}_${sample}-summary.txt
-
-    # clean up unneeded files
-    rm ${cross}_${sample}.fasta
-}
-export -f makeFastaDoBlast
-
-parallel -j 4 makeFastaDoBlast ::: \
-3003 ::: \
-R1 G1 ::: \
-01 02 03 ::: \
-/home/cory/pacbio-yeast-genomes ::: \
-1e-10 ::: \
-telomeric-SUC.fasta &
-
+./blast/bin/makeblastdb \
+    -dbtype nucl \
+    -in ./data/telomeric-SUC.fasta
 ```
+
+##Run blast searches on biowulf HPC
+```bash
+sbatch --array=1-10 src/run-blast.slurm \
+    3003 \
+    1e-10 \
+    /data/wellerca/projects/pacbio-yeast-genomes/ \
+    telomeric-SUC.fasta
+```
+
