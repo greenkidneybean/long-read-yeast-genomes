@@ -69,5 +69,4 @@ parallel -j 8 makeFastaDoBlast ::: \
     ${dbFasta} ::: \
     ${TMPDIR}  &&
 cat ${TMPDIR}/${cross}_${plate}_*.blast > ${repoPath}/data/${cross}_${plate}.blast &&
-cat ${TMPDIR}/${cross}_${plate}_*.txt > ${repoPath}/data/${cross}_${plate}.txt &&
-
+cat ${TMPDIR}/${cross}_${plate}_*.txt > ${repoPath}/data/${cross}_${plate}-summary.txt
