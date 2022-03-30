@@ -120,7 +120,11 @@ And these header files were backed up to:
 
 `nihbox:/cloud/pacbio-yeast-genomes/header-full.txt`
 
-##
+## Regenerate fastq file and BLAST
+```bash
+bash src/get-blast.sh
+```
+
 tar -xvf 3003.sam.tar.gz
 
 tar -xvf 3003.sam.tar.gz 3003_G1_01.sam | less
