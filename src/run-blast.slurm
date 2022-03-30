@@ -25,8 +25,6 @@ evalue=${2} # e.g. 1e-10
 repoPath=${3}
 dbFasta=${4}
 
-
-
 function makeFastaDoBlast() {
     cross=${1}
     plate=${2}
@@ -59,11 +57,6 @@ function makeFastaDoBlast() {
     rm ${cross}_${sample}.fasta
 }
 export -f makeFastaDoBlast
-
-cross=${1}
-evalue=${2} # e.g. 1e-10
-repoPath=${3}
-dbFasta=${4}
 
 parallel -j 8 makeFastaDoBlast ::: \
     ${cross} ::: \
