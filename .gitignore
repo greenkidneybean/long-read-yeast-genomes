@@ -10,3 +10,5 @@ tmp/*
 *.nsq
 *.ntf
 *.nto
+*summary.txt
+*.blast
