@@ -122,45 +122,65 @@ And these header files were backed up to:
 
 ## Regenerate fastq file and BLAST
 ```bash
+# get blast binaries from NCBI
 bash src/get-blast.sh
+
+# retrieve header data
+rclone copy nihbox:/cloud/pacbio-yeast-genomes/header-3003.txt data/
 ```
 
-tar -xvf 3003.sam.tar.gz
+```bash
 
-tar -xvf 3003.sam.tar.gz 3003_G1_01.sam | less
+```
+
 
 ```bash
 cross="3003"
-sample="G1_01"
-zipArchive="3003.sam.zip"
+evalue="1e-10"
+repoPath=${PWD}
+plate="G1"
+well="02"
+dbFasta="telomeric-SUC.fasta"
 
-unzip -p ${zipArchive} ${cross}_${sample}.sam
+# make blast database for telomeric sequences
+${repoPath}/blast/bin/makeblastdb -dbtype nucl -in "${repoPath}/data/${dbFasta}"
 
-function makeFastq() {
+function makeFastaDoBlast() {
     cross=${1}
-    sample=${2}
+    plate=${2}
+    well=${3}
+    repoPath=${4}
+    evalue=${5}
+    dbFasta=${6}
+    sample="${plate}_${well}"
 
-    samtools fastq \
-    -1 ${cross}_${sample}.fastq \
-    -2 ${cross}_${sample}.fastq \
-    -0 ${cross}_${sample}.fastq \
-    -s ${cross}_${sample}.fastq \
-    <(cat header-${cross}.txt ${cross}_${sample}.sam) &&
-    gzip ${cross}_${sample}.fastq 
+    samtools fasta \
+    -1 ${cross}_${sample}.fasta \
+    -2 ${cross}_${sample}.fasta \
+    -0 ${cross}_${sample}.fasta \
+    -s ${cross}_${sample}.fasta \
+    <(cat ${repoPath}/data/header-${cross}.txt <(unzip -p ${repoPath}/data/${cross}.sam.zip ${cross}_${sample}.sam))
+
+    # run blastn
+    ${repoPath}/blast/bin/blastn -outfmt 6 -query ${cross}_${sample}.fasta -db ${repoPath}/data/${dbFasta} | awk -v query="${cross}_${sample}" -v db="${dbFasta}" '{print query,db,$0}' >> ${repoPath}/data/${dbFasta%.fasta}-results.blast
+
+    # count number of lines
+    nReads=$(wc -l ${cross}_${sample}.fasta | awk '{print $1}')
+    let nReads=${nReads}/2
+
+    echo -e "${cross}_${sample}\t${nReads}" >> ${repoPath}/data/${dbFasta%.fasta}-summary.txt
+
+    # clean up unneeded files
+    rm ${cross}_${sample}.fasta
 }
+export -f makeFastaDoBlast
 
-while read 
+parallel -j 1 makeFastaDoBlast ::: \
+3003 ::: \
+R1 ::: \
+01 ::: \
+/home/cory/pacbio-yeast-genomes ::: \
+1e-10 ::: \
+telomeric-SUC.fasta &
 
-makeFastq 3003 G1_01
 ```
-
-$ echo "12 23 11" | awk '{split($0,a); print a[3]; print a[2]; print a[1]}'
-
-zgrep -F "3003_G1_74" SRR9330809.sam.gz > G1_74.sam
-split($12,a,:)
-zcat SRR9330809.sam.gz | awk {s=$12".sam";  print >$2 > s}
-
-zcat SRR9330809.sam.gz | awk '{split($12,a,":"); s=a[3]".sam"; print > s}' &
-rm SRR9330809.sam.gz
-ls 3003*.sam | zip -@ 3003.sam.zip &
-cp 3003.sam.zip /data/wellerca/projects/
