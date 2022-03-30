@@ -137,7 +137,7 @@ rclone copy nihbox:/cloud/pacbio-yeast-genomes/header-3003.txt data/
     -in ./data/telomeric-SUC.fasta
 ```
 
-##Run blast searches on biowulf HPC
+## Run blast searches on biowulf HPC
 ```bash
 sbatch --array=1-10 src/run-blast.slurm \
     3003 \

@@ -15,8 +15,10 @@ function finish {
 trap finish EXIT
 mkdir -p ${TMPDIR}
 
+module load samtools
+
 # Extract plate ID from slurm array ID
-let i=${SLURM_ARRAY_TASK_ID}-1              # offset array ID by 1 (bash arrays begin at 0)
+let i=${SLURM_ARRAY_TASK_ID}-1 || true      # offset array ID by 1 (bash arrays begin at 0); || true bypases exit code 0
 allPlates=(G1 G2 G3 G4 G5 R1 R2 R3 R4 R5)   # array of all plates
 plate=${allPlates[$i]}                      # take i-th plate
 
@@ -51,7 +53,7 @@ function makeFastaDoBlast() {
     nReads=$(wc -l ${cross}_${sample}.fasta | awk '{print $1}')
     let nReads=${nReads}/2
 
-    echo -e "${cross}_${sample}\t${nReads}" >> ${tmp}/${cross}_${sample}-summary.txt
+    echo -e "${cross}_${sample}\t${nReads}" >> ${tmp}/${cross}_${sample}.txt
 
     # clean up unneeded files
     rm ${cross}_${sample}.fasta
@@ -66,4 +68,6 @@ parallel -j 8 makeFastaDoBlast ::: \
     ${evalue} ::: \
     ${dbFasta} ::: \
     ${TMPDIR}  &&
-cat ${TMPDIR}/${cross}_${plate}_*.blast > ${repoPath}/data/${cross}_${plate}.blast
+cat ${TMPDIR}/${cross}_${plate}_*.blast > ${repoPath}/data/${cross}_${plate}.blast &&
+cat ${TMPDIR}/${cross}_${plate}_*.txt > ${repoPath}/data/${cross}_${plate}.txt &&
+
