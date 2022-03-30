@@ -154,6 +154,8 @@ function makeFastaDoBlast() {
     dbFasta=${6}
     sample="${plate}_${well}"
 
+    cd ${repoPath}/tmp
+
     samtools fasta \
     -1 ${cross}_${sample}.fasta \
     -2 ${cross}_${sample}.fasta \
@@ -162,23 +164,23 @@ function makeFastaDoBlast() {
     <(cat ${repoPath}/data/header-${cross}.txt <(unzip -p ${repoPath}/data/${cross}.sam.zip ${cross}_${sample}.sam))
 
     # run blastn
-    ${repoPath}/blast/bin/blastn -outfmt 6 -query ${cross}_${sample}.fasta -db ${repoPath}/data/${dbFasta} | awk -v query="${cross}_${sample}" -v db="${dbFasta}" '{print query,db,$0}' >> ${repoPath}/data/${dbFasta%.fasta}-results.blast
+    ${repoPath}/blast/bin/blastn -outfmt 6 -query ${cross}_${sample}.fasta -db ${repoPath}/data/${dbFasta} | awk -v query="${cross}_${sample}" -v db="${dbFasta}" '{OFS="\t"; print query,db,$0}' >> ${repoPath}/tmp/${cross}_${sample}.blast
 
     # count number of lines
     nReads=$(wc -l ${cross}_${sample}.fasta | awk '{print $1}')
     let nReads=${nReads}/2
 
-    echo -e "${cross}_${sample}\t${nReads}" >> ${repoPath}/data/${dbFasta%.fasta}-summary.txt
+    echo -e "${cross}_${sample}\t${nReads}" >> ${repoPath}/tmp/${cross}_${sample}-summary.txt
 
     # clean up unneeded files
     rm ${cross}_${sample}.fasta
 }
 export -f makeFastaDoBlast
 
-parallel -j 1 makeFastaDoBlast ::: \
+parallel -j 4 makeFastaDoBlast ::: \
 3003 ::: \
-R1 ::: \
-01 ::: \
+R1 G1 ::: \
+01 02 03 ::: \
 /home/cory/pacbio-yeast-genomes ::: \
 1e-10 ::: \
 telomeric-SUC.fasta &
