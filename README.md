@@ -137,12 +137,24 @@ rclone copy nihbox:/cloud/pacbio-yeast-genomes/header-3003.txt data/
     -in ./data/telomeric-SUC.fasta
 ```
 
-## Run blast searches on biowulf HPC
+## Run blast searches
 ```bash
+# If on biowulf HPC:
 sbatch --array=1-10 src/run-blast.slurm \
     3003 \
     1e-10 \
-    /data/wellerca/projects/pacbio-yeast-genomes/ \
+    ${PWD} \
     telomeric-SUC.fasta
+
+# If on local machine:
+for i in $(seq 1 10); do
+    bash src/run-blast.slurm \
+        3003 \
+        1e-10 \
+        ${PWD} \
+        telomeric-SUC.fasta \
+        $i
+done &
 ```
+
 

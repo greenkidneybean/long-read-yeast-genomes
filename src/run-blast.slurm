@@ -8,6 +8,18 @@
 
 set -e -o pipefail
 
+# for running on local machine:
+# provide 1 arg corresponding to the i'th plate
+if [ -z $SLURM_JOB_ID ]; then
+    SLURM_JOB_ID="1"
+    SLURM_ARRAY_TASK_ID=${5}
+else
+    module load samtools
+fi
+
+echo "job id ${SLURM_JOB_ID}"
+echo "array task id ${SLURM_ARRAY_TASK_ID}"
+
 export TMPDIR="/dev/shm/${USER}/${SLURM_JOB_ID}"
 function finish {
     rm -rf ${TMPDIR}
@@ -15,7 +27,6 @@ function finish {
 trap finish EXIT
 mkdir -p ${TMPDIR}
 
-module load samtools
 
 # Extract plate ID from slurm array ID
 let i=${SLURM_ARRAY_TASK_ID}-1 || true      # offset array ID by 1 (bash arrays begin at 0); || true bypases exit code 0
