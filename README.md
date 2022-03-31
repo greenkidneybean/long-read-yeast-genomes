@@ -21,11 +21,8 @@ Where `3003_G1_44` describes the cross (`3003`) and segregant (`G1_44`)
 wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/3.0.0/sratoolkit.3.0.0-ubuntu64.tar.gz
 
 tar -zxvf sratoolkit.3.0.0-ubuntu64.tar.gz
-
 rm sratoolkit.3.0.0-ubuntu64.tar.gz
-
 mv sratoolkit.3.0.0-ubuntu64 sra
-
 sra/bin/vdb-config --restore-defaults
 ```
 
@@ -35,23 +32,6 @@ Use sra-toolkit to retrieve the desired reads in compressed format
 acc='SRR9330809'
 sra/bin/sam-dump  --gzip ${acc} > ${acc}.sam.gz
 ```
-
-
-
-samtools fastq on individual .sam file
-
-# downsample to 1 / 10,000
-module load GATK
-gatk DownsampleSam \
---INPUT SRR9330809.sam \
---OUTPUT downsampled.sam \
---PROBABILITY 0.0001
-
-samtools fastq -1 reads.fastq -2 reads.fastq -0 reads.fastq -s reads.fastq downsampled.sam
-
-zgrep -v -F "@" ${samfile} | sort -k12,12 | gzip -c > SRR9330809.sorted.sam.gz
-
-zgrep -v -F "@" SRR9330809.sam | sort -k12,12 | gzip -c > /data/wellerca/projects/SRR9330809.sorted.sam.gz &
 
 ## Sorting samfile
 The goal is to split a large sam file into multiple smaller `sam` files, where each one
@@ -86,15 +66,6 @@ ls 3003*.sam | zip -@ 3003.sam.zip                  # create zip archive from al
 cp 3003.sam.zip /data/wellerca/projects/            # copy off the ramdisk to permenant storage
 
 cd && rm -rf ${TMPDIR}                              # clean up tmp directory
-```
-```bash
-cross='3003'
-plate='G1'
-well='01'
-
-
-unzip -p "${cross}.sam.zip" "${cross}_${plate}_${well}.sam"
-
 ```
 
 ## Reconstruct header

@@ -22,25 +22,14 @@ setkey(blast, query)
 setkey(nreads,query)
 
 dat <- merge(blast, nreads)
+dat[, db := NULL]
 
 dat[, plate := tstrsplit(query, split="_")[2]]
 dat[, well := tstrsplit(query, split="_")[3]]
 dat[, well := as.numeric(well)]
 
-dat.ag <- dat[, list(.N), by=list(query, db, target, plate, well, nReads)]
+dat.ag <- dat[, list(.N), by=list(query, target, plate, well, nReads)]
 
-## UNFINISHED FROM HERE
+ggplot(dat.ag, aes(x=nReads, y=N, color=target)) + geom_point(shape=21, alpha=0.85) +
+labs(x="total reads genome-wide", y="reads aligned to target via BLAST")
 
-dat.ag[, pct_mapped := (N/nReads), by=list(query, target)]
-dat.wide <- dcast(dat.ag, query~target, value.var="N")
-
-
-
-
-dat.wide <- dcast(dat.ag, plate+well~match, value.var="N")
-
-dat.final <- melt(dat.wide, measure.vars=c("telo1", "telo2"), variable.name="telo-specific-region", value.name="reads")
-
-
-ggplot(dat.final, aes(x=intact, y=reads, color=`telo-specific-region`)) + geom_point() +
-labs(x="reads mapping to whole 
