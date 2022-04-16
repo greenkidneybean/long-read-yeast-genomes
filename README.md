@@ -128,4 +128,69 @@ for i in $(seq 1 10); do
 done &
 ```
 
+## Blast vs entire chromosome
+```blast
+# If on local machine:
+for i in $(seq 1 10); do
+    bash src/run-blast.slurm \
+        3003 \
+        1e-10 \
+        ${PWD} \
+        MSY37-36-chrIV.fasta \
+        $i \
+        98
+done &
+```
 
+## Retrieve Joshua Bloom parental genotype data
+```bash
+# Retrieve from cloud storage
+rclone copy onedrive:/cloud/pacbio-yeast-genomes/joshua-bloom-data/  data/
+
+# Manually download from Box:
+https://www.dropbox.com/sh/jqm7a11zz9laytd/AABaE0EfQxLH6ounPhJ7yYWya?dl=0
+# joshua-bloom-data/parents_w_svar_sorted.vcf.gz
+# joshua-bloom-data/parents_w_svar_sorted.vcf.gz.tbi
+```
+
+## Retrieve S288c reference
+```bash
+rclone copy nihbox:/cloud/S288C/S288C_reference_sequence_R64-3-1_20210421.fsa.gz data/
+gunzip data/S288C_reference_sequence_R64-3-1_20210421.fsa.gz
+python3 src/extractContig.py data/S288C_reference_sequence_R64-3-1_20210421.fsa chromosome=IV > data/S288C-chrIV.fasta
+
+```
+
+## Retrieve parental pacbio contigs for chrIV
+```bash
+# rclone copy nihbox:/cloud/pacbio-yeast-genomes/MSY24_adjij_m3_assembly.fasta
+# rclone copy nihbox:/cloud/pacbio-yeast-genomes/MSY25_adjik_m4_assembly.fasta
+# rclone copy nihbox:/cloud/pacbio-yeast-genomes/MSY26_adjil_m3_assembly.fasta
+# rclone copy nihbox:/cloud/pacbio-yeast-genomes/MSY27_adjim_m1_assembly.fasta
+# rclone copy nihbox:/cloud/pacbio-yeast-genomes/MSY28_adjin_m2_assembly.fasta
+# rclone copy nihbox:/cloud/pacbio-yeast-genomes/MSY29_adjio_m1_assembly.fasta
+# rclone copy nihbox:/cloud/pacbio-yeast-genomes/MSY30_adjip_m1_assembly.fasta
+# rclone copy nihbox:/cloud/pacbio-yeast-genomes/MSY31_adjiq_m1_assembly.fasta
+# rclone copy nihbox:/cloud/pacbio-yeast-genomes/MSY32_adjir_m1_assembly.fasta
+# rclone copy nihbox:/cloud/pacbio-yeast-genomes/MSY33_adjis_m1_assembly.fasta
+# rclone copy nihbox:/clouqd/pacbio-yeast-genomes/MSY34_adjit_m1_assembly.fasta
+# rclone copy nihbox:/cloud/pacbio-yeast-genomes/MSY35_adjiu_m1_assembly.fasta
+rclone copy nihbox:/cloud/pacbio-yeast-genomes/MSY36_adjiv_m1_assembly.fasta data/ 
+rclone copy nihbox:/cloud/pacbio-yeast-genomes/MSY37_adjiw_m2_assembly.fasta data/ 
+# rclone copy nihbox:/cloud/pacbio-yeast-genomes/MSY38_adjix_m1_assembly.fasta
+# rclone copy nihbox:/cloud/pacbio-yeast-genomes/MSY39_adjiy_m1_assembly.fasta
+
+```
+
+## Extract chrIV contigs
+```bash
+python3 src/extractContig.py data/MSY36_adjiv_m1_assembly.fasta chrIV > data/MSY36-chrIV.fasta
+python3 src/extractContig.py data/MSY37_adjiw_m2_assembly.fasta chrIV > data/MSY37-chrIV.fasta
+```
+
+## Run minimap2
+```bash
+src/minimap.sif minimap2 --cs data/MSY37-chrIV.fasta data/MSY36-chrIV.fasta > data/MSY37-36.paf
+src/minimap.sif paftools.js call -L 40000 data/MSY37-36.paf > data/MSY37-36-call.txt
+#src/minimap.sif paftools.js view -l 0 aln.sam > aln.maf
+```

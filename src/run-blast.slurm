@@ -37,6 +37,7 @@ cross=${1}
 evalue=${2} # e.g. 1e-10
 repoPath=${3}
 dbFasta=${4}
+pctIdentity=${6}
 
 function makeFastaDoBlast() {
     cross=${1}
@@ -47,6 +48,7 @@ function makeFastaDoBlast() {
     dbFasta=${6}
     tmp=${7}
     sample="${plate}_${well}"
+    pctIdentity=${8}
 
     mkdir -p ${tmp} && cd ${tmp}
 
@@ -58,7 +60,7 @@ function makeFastaDoBlast() {
     <(cat ${repoPath}/data/header-${cross}.txt <(unzip -p ${repoPath}/data/${cross}.sam.zip ${cross}_${sample}.sam))
 
     # run blastn
-    ${repoPath}/blast/bin/blastn -outfmt 6 -query ${cross}_${sample}.fasta -db ${repoPath}/data/${dbFasta} | awk -v query="${cross}_${sample}" -v db="${dbFasta}" '{OFS="\t"; print query,db,$0}' >> ${tmp}/${cross}_${sample}.blast
+    ${repoPath}/blast/bin/blastn -perc_identity ${pctIdentity} -outfmt 6 -query ${cross}_${sample}.fasta -db ${repoPath}/data/${dbFasta} | awk -v query="${cross}_${sample}" -v db="${dbFasta}" '{OFS="\t"; print query,db,$0}' >> ${tmp}/${cross}_${sample}.blast
 
     # count number of lines
     nReads=$(wc -l ${cross}_${sample}.fasta | awk '{print $1}')
@@ -71,6 +73,28 @@ function makeFastaDoBlast() {
 }
 export -f makeFastaDoBlast
 
+
+function makeFasta() {
+    cross=${1}
+    plate=${2}
+    well=${3}
+    repoPath=${4}
+    sample="${plate}_${well}"
+
+    mkdir -p ${tmp} && cd ${tmp}
+
+    samtools fasta \
+    -1 ${cross}_${sample}.fasta \
+    -2 ${cross}_${sample}.fasta \
+    -0 ${cross}_${sample}.fasta \
+    -s ${cross}_${sample}.fasta \
+    <(cat ${repoPath}/data/header-${cross}.txt <(unzip -p ${repoPath}/data/${cross}.sam.zip ${cross}_${sample}.sam))
+
+    # clean up unneeded files
+    rm ${cross}_${sample}.fasta
+}
+export -f makeFasta
+
 parallel -j 8 makeFastaDoBlast ::: \
     ${cross} ::: \
     ${plate} ::: \
@@ -78,6 +102,7 @@ parallel -j 8 makeFastaDoBlast ::: \
     ${repoPath} ::: \
     ${evalue} ::: \
     ${dbFasta} ::: \
-    ${TMPDIR}  &&
+    ${TMPDIR} ::: \
+    ${pctIdentity} &&
 cat ${TMPDIR}/${cross}_${plate}_*.blast > ${repoPath}/data/${cross}_${plate}.blast &&
 cat ${TMPDIR}/${cross}_${plate}_*.txt > ${repoPath}/data/${cross}_${plate}-summary.txt
