@@ -1,3 +1,4 @@
+slurm*.out
 sra/*
 blast/*
 tmp/*
@@ -12,3 +13,8 @@ tmp/*
 *.nto
 *summary.txt
 *.blast
+data/imputed/*.png
+data/imputed/*.txt
+.snakemake/*
+data/blasts/*.blast.gz
+.parallel/*
