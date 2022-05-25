@@ -157,7 +157,7 @@ process_sample <- function(filename) {
 
 main <- function() {
     blast_filenames <- list.files('data/blasts', full.names=TRUE)
-    for(i in blast_filenames[1:100]) {
+    for(i in blast_filenames) {
         print(i)
         try(process_sample(i))
     }
