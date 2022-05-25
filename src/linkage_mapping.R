@@ -45,7 +45,9 @@ import_blast <- function(blast_filename) {
     return(dt[])
 }
 
-filter_blast <- function(dt, min_PID=100, min_evalue=1e-60, min_match_length=130) {
+filter_blast <- function(dt, min_PID=100, min_evalue=1e-60, min_match_length=151) {
+    uniques <- dt[, .N, by=readID][N==1, readID]
+    dt <- dt[readID %in% uniques]
     dt <- dt[evalue <= min_evalue & match_length >= min_match_length & PID >= min_PID][]
     dt[, .SD[evalue == min(evalue)], by=readID]
 }
@@ -84,6 +86,9 @@ fill_haplotypes <- function(dt) {
     dt[logOdds > 0, haplotype := parent1]
     dt[logOdds < 0, haplotype := parent2]
     dt[p > 0.05, haplotype := NA]
+}
+
+impute_haplotypes <- function(dt) {
     dt[, nextHap := na.locf(haplotype, na.rm=FALSE)]
     dt[, prevHap := na.locf(haplotype, na.rm=FALSE, fromLast=TRUE)]
     dt[window == min(window), prevHap := NA, by=chr]
@@ -143,7 +148,8 @@ process_sample <- function(filename) {
     calculate_log_odds(blast)
     calculate_binomial_p(blast)
     blast <- fill_empty_windows(blast)
-    blast <- fill_haplotypes(blast)
+    fill_haplotypes(blast)
+    #blast <- impute_haplotypes(blast)
 
     haplotypes <- collapse_windows(blast)
     haplotypes[, 'cross' := cross]
@@ -157,7 +163,7 @@ process_sample <- function(filename) {
 
 main <- function() {
     blast_filenames <- list.files('data/blasts', full.names=TRUE)
-    for(i in blast_filenames) {
+    for(i in blast_filenames[1:50]) {
         print(i)
         try(process_sample(i))
     }

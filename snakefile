@@ -16,7 +16,7 @@ plates = ['G' + str(x) for x in range(1,6)] + ['R' + str(x) for x in range(1,6)]
 # rule targets identifies the list of final output files to generate
 rule targets:
     """Defines the set of files desired at end of pipeline"""
-    input: "data/pacbio/blasts/.done"
+    input: "data/fastq/.done"
     #input: expand("data/blasts/{cross}_{plate}_{well}.blast.gz", cross='3003', plate=plates, well=wells)
     #input: expand("data/imputed/{cross}_{plate}_{well}.txt", cross="3003", plate=plates, well=wells)
 
@@ -59,13 +59,31 @@ rule make_blast_db:
 #         <(cat data/header-{wildcards.cross}.txt <(unzip -p  {input} {wildcards.cross}_{wildcards.plate}_{wildcards.well}.sam))
 #         """
 
-rule run_blastn:
+# rule run_blastn:
+#     input: blast_db = "data/pacbio/pacbio_db.fasta"
+#     output: touch("data/blasts/.done")
+#     threads: 8
+#     resources:
+#         mem_mb = 1024*8,
+#         runtime_min = 120,
+#     params:
+#         pct_identity = lambda wildcards: config["pct_identity"],
+#         e_value_cutoff = lambda wildcards: config["e_value_cutoff"],
+#         cross = lambda wildcards: config["cross"]
+#     priority: 3
+#     container: "library://wellerca/pseudodiploidy/mapping:latest"
+#     shell:
+#         """
+#         src/convert_sam_to_fasta.sh  data/{params.cross}.sam.zip {params.pct_identity} {threads} {params.e_value_cutoff} {input.blast_db}
+#         """
+
+rule convert_fastq:
     input: blast_db = "data/pacbio/pacbio_db.fasta"
-    output: touch("data/blasts/.done")
-    threads: 8
+    output: touch("data/fastq/.done")
+    threads: 1
     resources:
-        mem_mb = 1024*8,
-        runtime_min = 120,
+        mem_mb = 1024*2,
+        runtime_min = 15,
     params:
         pct_identity = lambda wildcards: config["pct_identity"],
         e_value_cutoff = lambda wildcards: config["e_value_cutoff"],
@@ -74,22 +92,22 @@ rule run_blastn:
     container: "library://wellerca/pseudodiploidy/mapping:latest"
     shell:
         """
-        src/convert_sam_to_fasta.sh  data/{params.cross}.sam.zip {params.pct_identity} {threads} {params.e_value_cutoff} {input.blast_db}
+        bash src/convert_sam_to_fastq.sh  data/{params.cross}.sam.zip {params.pct_identity} {threads} {params.e_value_cutoff} {input.blast_db}
         """
 
-rule impute_haplotypes:
-    input: "data/blasts/.done"
-    output: touch("data/imputed/.done")
-    threads: 1
-    resources:
-        mem_mb = 1024*2,
-        runtime_min = 5,
-    params:
-        parent1 = STRAINS[0]
-        parent2 = STRAINS[1]
-    priority: 4
-    shell:
-        """
-        module load R/3.6.3
-        Rscript src/linkage_mapping.R {params.parent1} {params.parent2}
-        """
+# rule impute_haplotypes:
+#     input: "data/blasts/.done"
+#     output: touch("data/imputed/.done")
+#     threads: 1
+#     resources:
+#         mem_mb = 1024*2,
+#         runtime_min = 5,
+#     params:
+#         parent1 = STRAINS[0]
+#         parent2 = STRAINS[1]
+#     priority: 4
+#     shell:
+#         """
+#         module load R/3.6.3
+#         Rscript src/linkage_mapping.R {params.parent1} {params.parent2}
+#         """

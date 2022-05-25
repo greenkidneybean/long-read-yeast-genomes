@@ -1,3 +1,6 @@
+data/pacbio/*
+data/bam/*
+data/fastq/*
 slurm*.out
 sra/*
 blast/*
