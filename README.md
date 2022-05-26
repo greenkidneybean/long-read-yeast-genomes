@@ -189,8 +189,36 @@ python3 src/extractContig.py data/MSY37_adjiw_m2_assembly.fasta chrIV > data/MSY
 ```
 
 ## Run minimap2
+
+`singularity pull src/minimap.sif library://wellerca/pacbio/minimap`
+
+
 ```bash
-src/minimap.sif minimap2 --cs data/MSY37-chrIV.fasta data/MSY36-chrIV.fasta > data/MSY37-36.paf
-src/minimap.sif paftools.js call -L 40000 data/MSY37-36.paf > data/MSY37-36-call.txt
+singularity exec --bind $(readlink $PWD) src/minimap.sif \
+    minimap2 \
+    -x splice \
+    -g 7000 \
+    data/pacbio/pacbio_273614.fasta \
+    data/pacbio/pacbio_YJM981.fasta | \
+    cut -f 1-12
+    
+     \
+    > 273614-YJM981.paf
+
+singularity exec --bind $(readlink $PWD) src/minimap.sif \
+    minimap2 \
+    -x asm10 \
+    -g 10000 \
+    data/pacbio/pacbio_273614.fasta \
+    data/pacbio/pacbio_YJM981.fasta \
+    > 273614-YJM981.paf
+
+singularity exec --bind $(readlink $PWD) src/minimap.sif \
+    paftools.js \
+    call \
+    -L 40000 \
+    273614-YJM981.paf \
+    > 273614-YJM981-call.txt
+
 #src/minimap.sif paftools.js view -l 0 aln.sam > aln.maf
 ```
