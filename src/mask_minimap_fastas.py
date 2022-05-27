@@ -1,22 +1,110 @@
 #!/usr/bin/env python
-
+'''combines masking bed file + fasta file and returns masked fasta file'''
 import sys
+import argparse
+import logging
+import gzip
+import fileinput
+import time
 
-fasta_filename = sys.argv[1]
-start = int(sys.argv[2])
-end = int(sys.argv[3])
+class ExitOnExceptionHandler(logging.StreamHandler):
+    '''logger class to exit on error or critical'''
+    def emit(self, record):
+        super().emit(record)
+        if record.levelno in (logging.ERROR, logging.CRITICAL):
+            raise SystemExit(-1)
+
+logger = logging.getLogger(None)
+logging.basicConfig(handlers=[ExitOnExceptionHandler()], level=logging.DEBUG)
+
+def import_bed(f):
+    '''imports bed file and returns dictionary of seq: (start, end)'''
+    bed = {}
+    with open(f, 'r', encoding='utf-8') as infile:
+        for line in infile:
+            seq, start, end = line.strip().split()
+            bed[seq] = (int(start), int(end))
+    return bed
+
 
 def import_fasta(f):
+    '''loads a fasta file and returns dictionary of header : seq'''
     seqs = {}
-    with open(f, 'r', encoding='utf-8') as infile:
-        entries = infile.read().split('>')[1:]
-        for i in entries:
-            header = i[1:1000].split('\n')[0].strip()
-            nucleotides = ''.join(i.split('\n')[1:])
-            seqs[header] = nucleotides
+    try:
+        with fileinput.hook_compressed(f, 'r') as infile:
+            try:
+                text = infile.read()
+            except gzip.BadGzipFile as error:
+                logger.error('File ends in .gz but cannot be decoded: %s', error)
+                sys.exit(1)
+            if f.endswith('.gz'):
+                try:
+                    text = text.decode()
+                except(UnicodeDecodeError, AttributeError, gzip.BadGzipFile) as error:
+                    logger.error('Cannot uncompress from gzip, even though \
+                                  file ends in .gz: %s', error)
+    except FileNotFoundError as error:
+        logger.error('File %s does not exist, check spelling and location', f)
+    entries = text.split('>')[1:]
+    for i in entries:
+        header = i[:1000].split('\n')[0].strip()
+        nucleotides = ''.join(i.split('\n')[1:])
+        seqs[header] = nucleotides
+    return seqs
 
-fasta = import_fasta(fasta_filename)
+def wrap_fasta(seq, width=80):
+    '''inserts newline every <width> characters'''
+    return '\n'.join([seq[i:(i+width)] for i in range(0, len(seq), width)])
 
-def mask_fasta(seq, start, end):
+
+def mask_fasta(fasta, bed):
     '''replaces nucleotides outside the (start, end) range with N'''
-masked_fasta = 'N'*start + 'N'*end
+    for i in fasta:
+        seq = fasta[i]
+        start, end = bed[i]
+        start -= 1
+        end -= 1
+        length = len(seq)
+        leading_n = start
+        trailing_n = length - end - 1
+        masked_fasta = wrap_fasta('N'*leading_n + seq[start:(end+1)] + 'N'*trailing_n)
+        yield (i, masked_fasta)
+
+
+def main():
+    '''main'''
+    parser = argparse.ArgumentParser()
+    if '--debug' not in sys.argv:
+        parser.add_argument('fasta_filename',
+                            type=str,
+                            help='Filename for input fasta file. Can be gzipped.')
+        parser.add_argument('bed_filename',
+                            type=str,
+                            help='Filename for masking the input fasta sequences')
+        parser.add_argument('--out',
+                            type=str,
+                            help='Filename for writing output')
+
+        args = parser.parse_args()
+        fasta_filename = args.fasta_filename
+        bed_filename = args.bed_filename
+        out_filename = args.out
+
+    start_time = time.time()
+    # Initialize logging
+
+    fasta = import_fasta(fasta_filename)
+    bed = import_bed(bed_filename)
+
+    masked_fasta = mask_fasta(fasta, bed)
+    with open(out_filename, 'w', encoding='utf-8') as outfile:
+        for i in masked_fasta:
+            print('>' + i[0] + '\n' + i[1], file=outfile)
+
+    run_time = (time.time() - start_time)
+    logger.info("Total runtime: %s", run_time)
+    sys.exit()
+
+
+if __name__ == '__main__':
+    main()

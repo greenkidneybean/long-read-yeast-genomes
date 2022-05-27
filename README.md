@@ -200,10 +200,20 @@ singularity exec --bind $(readlink $PWD) src/minimap.sif \
     -g 7000 \
     data/pacbio/pacbio_273614.fasta \
     data/pacbio/pacbio_YJM981.fasta | \
+    cut -f 1-12 > minimap.out
+
+src/mask_minimap_fastas.py data/pacbio/pacbio_YJM981.fasta data/pacbio/YJM981.bed --out data/pacbio/YJM981.mask.fasta
+src/mask_minimap_fastas.py data/pacbio/pacbio_273614.fasta data/pacbio/273614.bed --out data/pacbio/273614.mask.fasta
+
+
+singularity exec --bind $(readlink $PWD) src/minimap.sif \
+    minimap2 \
+    -x splice \
+    -g 7000 \
+    data/pacbio/YJM981.mask.fasta \
+    data/pacbio/273614.mask.fasta | \
     cut -f 1-12
-    
-     \
-    > 273614-YJM981.paf
+
 
 singularity exec --bind $(readlink $PWD) src/minimap.sif \
     minimap2 \
@@ -221,4 +231,9 @@ singularity exec --bind $(readlink $PWD) src/minimap.sif \
     > 273614-YJM981-call.txt
 
 #src/minimap.sif paftools.js view -l 0 aln.sam > aln.maf
+
+module load mummer
+nucmer 273614_chrI.fa YJM981_chrI.fa
+show-aligns out.delta 273614_chrI YJM981_chrI
+
 ```
