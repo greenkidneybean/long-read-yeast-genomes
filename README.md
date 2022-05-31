@@ -179,7 +179,6 @@ rclone copy nihbox:/cloud/pacbio-yeast-genomes/MSY36_adjiv_m1_assembly.fasta dat
 rclone copy nihbox:/cloud/pacbio-yeast-genomes/MSY37_adjiw_m2_assembly.fasta data/ 
 # rclone copy nihbox:/cloud/pacbio-yeast-genomes/MSY38_adjix_m1_assembly.fasta
 # rclone copy nihbox:/cloud/pacbio-yeast-genomes/MSY39_adjiy_m1_assembly.fasta
-
 ```
 
 ## Extract chrIV contigs
@@ -230,10 +229,36 @@ singularity exec --bind $(readlink $PWD) src/minimap.sif \
     273614-YJM981.paf \
     > 273614-YJM981-call.txt
 
+module load mummer
+nucmer data/pacbio/273614_chrI.fa data/pacbio/YJM981_chrI.fa
+show-aligns out.delta 273614_chrI YJM981_chrI
 #src/minimap.sif paftools.js view -l 0 aln.sam > aln.maf
+```
+
+
+function splitFasta() {
+    inFasta=${1}
+    awk -F "(^>|\t| )" '{if($0 ~ /^>/) {s=$2".fasta";  print ">"$2 > s} else print > s}' ${inFasta}
+}
+
+export -f splitFasta
 
 module load mummer
-nucmer 273614_chrI.fa YJM981_chrI.fa
-show-aligns out.delta 273614_chrI YJM981_chrI
+
+
+
+(cd data/pacbio; splitFasta pacbio_YJM981.fasta; splitFasta pacbio_273614.fasta)
+(cd data/pacbio; nucmer 273614_chrIV.fasta YJM981_chrIV.fasta; dnadiff -d out.delta;) 
+src/filter_snps.py data/pacbio/out.snps 70 > data/pacbio/273614.filter.bed
+
+# make bed file
+src/mask_fasta.py data/pacbio/273614_chrIV.fasta data/pacbio/273614.filter.bed --out data/pacbio/273614.mask.fasta
+
+
+# map
+module load bwa
+bwa index data/pacbio/273614.mask.fasta
+
+```
 
 ```
