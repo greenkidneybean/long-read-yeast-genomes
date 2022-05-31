@@ -249,7 +249,7 @@ module load mummer
 
 (cd data/pacbio; splitFasta pacbio_YJM981.fasta; splitFasta pacbio_273614.fasta)
 (cd data/pacbio; nucmer 273614_chrIV.fasta YJM981_chrIV.fasta; dnadiff -d out.delta;) 
-src/filter_snps.py data/pacbio/out.snps 70 > data/pacbio/273614.filter.bed
+src/filter_snps.py data/pacbio/out.snps 20 > data/pacbio/273614.filter.bed
 
 # make bed file
 src/mask_fasta.py data/pacbio/273614_chrIV.fasta data/pacbio/273614.filter.bed --out data/pacbio/273614.mask.fasta
@@ -259,6 +259,10 @@ src/mask_fasta.py data/pacbio/273614_chrIV.fasta data/pacbio/273614.filter.bed -
 module load bwa
 bwa index data/pacbio/273614.mask.fasta
 
+
+#TODO:
+
+fix mask_fasta function of mask_fasta.py to be able to mask multiple regions within a sequence
 ```
 
 ```
