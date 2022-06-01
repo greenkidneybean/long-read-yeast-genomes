@@ -280,6 +280,8 @@ bcftools mpileup \
     grep -v "^##" > test.vcf
 
 samtools depth data/bam/3003_G1_01_273614.mask.bam
+```
+
 ```R
 
 library(data.table)
@@ -293,4 +295,24 @@ windowSize <- 2000
 dat[, bin := cut(POS, breaks=seq(0,windowSize+max(dat$POS), windowSize))]
 dat[, bin := as.numeric(factor(bin))]
 ggplot(data=dat[, list(POS, fractionAlt = sum(GT==1)/.N), by=bin][fractionAlt > 0.9 | fractionAlt < 0.1], aes(x=POS, y=fractionAlt)) + geom_point()
+
+library(foreach)
+
+window_width <- 5
+
+dat[, GT := as.numeric(GT)]
+
+o <- foreach(i=1:(nrow(dat)-1), .combine='rbind') %do% {
+        dat.sub <- dat[i:(i+window_width)]
+        data.table("meanGT" = mean(dat.sub[, GT], na.rm=T),
+                    "center" = median(dat.sub[,POS], na.rm=T)
+                    )
+    }
+
+ggplot(o, aes(x=center, y=meanGT)) + geom_point()
+
+dat.ag <- dat[, list(.N, fractionAlt = sum(GT==1)/.N), by=bin]
+dat.ag[, POS := windowSize*bin]
+ggplot(dat.ag[fractionAlt %in% c(0,1) & N > 1], aes(x=POS, y=fractionAlt)) + geom_point()
+
 ```
