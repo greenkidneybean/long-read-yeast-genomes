@@ -23,7 +23,11 @@ def import_bed(f):
     with open(f, 'r', encoding='utf-8') as infile:
         for line in infile:
             seq, start, end = line.strip().split()
-            bed[seq] = (int(start), int(end))
+            start = int(start)
+            end = int(end)
+            if seq not in bed:
+                bed[seq] = []
+            bed[seq].append((start, end))
     return bed
 
 
@@ -52,23 +56,31 @@ def import_fasta(f):
         seqs[header] = nucleotides
     return seqs
 
+def get_mask_ranges(bed_ranges, seq):
+    '''returns the negation of the included bed_ranges,
+    i.e. everything that lies outside of those ranges.'''
+    mask_ranges = [(1, bed_ranges[0][0] - 1)]
+    mask_ranges +=[(bed_ranges[i][1] + 1, bed_ranges[i+1][0] - 1) for i in range(len(bed_ranges)-1)]
+    mask_ranges += [(bed_ranges[-1][1], len(seq))]
+    return mask_ranges
+
+
 def wrap_fasta(seq, width=80):
     '''inserts newline every <width> characters'''
     return '\n'.join([seq[i:(i+width)] for i in range(0, len(seq), width)])
 
 
-def mask_fasta(fasta, bed):
-    '''replaces nucleotides outside the (start, end) range with N'''
-    for i in fasta:
-        seq = fasta[i]
-        start, end = bed[i]
-        start -= 1
-        end -= 1
-        length = len(seq)
-        leading_n = start
-        trailing_n = length - end - 1
-        masked_fasta = wrap_fasta('N'*leading_n + seq[start:(end+1)] + 'N'*trailing_n)
-        yield (i, masked_fasta)
+def mask_fasta(nucleotides, bed_retain_ranges):
+    '''replaces nucleotides outside the (start, end) range with N.
+    <nucleotides> is a pure string of nucleotides (no newlines),
+    <bed> is a list of tuples, each item being (start, end) positions.'''
+    mask_ranges = get_mask_ranges(bed_retain_ranges, nucleotides)
+    masked_seq = ''
+    for mask_range, retain_range in zip(mask_ranges, bed_retain_ranges):
+        masked_seq += 'N' * (1 + mask_range[1] - mask_range[0])     # add masked nucleotides
+        masked_seq += nucleotides[slice(retain_range[0]-1, retain_range[1])]
+    masked_seq += 'N' * (1 + mask_ranges[-1][1] - mask_ranges[-1][0])
+    return masked_seq
 
 
 def main():
@@ -93,13 +105,18 @@ def main():
     start_time = time.time()
     # Initialize logging
 
-    fasta = import_fasta(fasta_filename)
+    fastas = import_fasta(fasta_filename)
     bed = import_bed(bed_filename)
 
-    masked_fasta = mask_fasta(fasta, bed)
+    for i in list(fastas):
+        if i in list(bed):
+            masked_sequence = wrap_fasta(mask_fasta(fastas[i], bed[i]))
+            fastas[i] = masked_sequence
+
     with open(out_filename, 'w', encoding='utf-8') as outfile:
-        for i in masked_fasta:
-            print('>' + i[0] + '\n' + i[1], file=outfile)
+        for i in list(fastas):
+            print('>' + i, file=outfile)
+            print(fastas[i], file=outfile)
 
     run_time = (time.time() - start_time)
     logger.info("Total runtime: %s", run_time)

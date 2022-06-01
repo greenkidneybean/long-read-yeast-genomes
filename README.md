@@ -249,20 +249,48 @@ module load mummer
 
 (cd data/pacbio; splitFasta pacbio_YJM981.fasta; splitFasta pacbio_273614.fasta)
 (cd data/pacbio; nucmer 273614_chrIV.fasta YJM981_chrIV.fasta; dnadiff -d out.delta;) 
-src/filter_snps.py data/pacbio/out.snps 20 > data/pacbio/273614.filter.bed
+
+src/filter_snps.py data/pacbio/out.snps 20 > data/pacbio/273614.mask.filter.bed
+src/print_target_snps.py data/pacbio/out.snps 20 > data/pacbio/273614.mask.targets.txt
+
 
 # make bed file
 src/mask_fasta.py data/pacbio/273614_chrIV.fasta data/pacbio/273614.filter.bed --out data/pacbio/273614.mask.fasta
 
 
 # map
+```bash
 module load bwa
+module load samtools
 bwa index data/pacbio/273614.mask.fasta
 
+src/bwa_map.sh 3003_G1_01.fastq 273614.mask
+src/bwa_map.sh 3003_G1_02.fastq 273614.mask
 
-#TODO:
 
-fix mask_fasta function of mask_fasta.py to be able to mask multiple regions within a sequence
-```
 
+bcftools mpileup \
+    --targets-file data/pacbio/273614.targets.txt \
+    --fasta-ref data/pacbio/273614.mask.fasta \
+    data/bam/3003_G1_01_273614.mask.bam | \
+    bcftools call \
+    --ploidy 1 -m -Ob | \
+    bcftools view | \
+    sed 's/1:.*$/1/g' | \
+    grep -v "^##" > test.vcf
+
+samtools depth data/bam/3003_G1_01_273614.mask.bam
+```R
+
+library(data.table)
+library(ggplot2)
+
+sample <- '3003_G1_02'
+
+dat <- fread(paste0('data/vcf/', sample, '.vcf'), skip="#CHROM")
+setnames(dat, c('CHROM','POS',' ID','REF','ALT','QUAL','FILTER','INFO','FORMAT','GT'))
+windowSize <- 2000
+dat[, bin := cut(POS, breaks=seq(0,windowSize+max(dat$POS), windowSize))]
+dat[, bin := as.numeric(factor(bin))]
+ggplot(data=dat[, list(POS, fractionAlt = sum(GT==1)/.N), by=bin][fractionAlt > 0.9 | fractionAlt < 0.1], aes(x=POS, y=fractionAlt)) + geom_point()
 ```

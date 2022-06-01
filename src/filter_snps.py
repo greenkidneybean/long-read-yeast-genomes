@@ -38,8 +38,8 @@ for snp in snps:
         print('this should not happen')
         exit(1)
     if start > prev_end:    # non-overlapping with previous
-        print(prev_ref_name, prev_start, prev_end)
+        print(prev_ref_name, prev_start, prev_end, sep='\t')
         prev_ref_name, prev_start, prev_end = snp
     elif start <= prev_end: # overlapping with previous
         prev_end = end      # update prev_end to current end
-print(prev_ref_name, prev_start, prev_end)
+print(prev_ref_name, prev_start, prev_end, sep='\t')
