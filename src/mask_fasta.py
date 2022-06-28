@@ -65,7 +65,7 @@ def get_mask_ranges(bed_ranges, seq):
     return mask_ranges
 
 
-def wrap_fasta(seq, width=80):
+def wrap_fasta(seq, width=60):
     '''inserts newline every <width> characters'''
     return '\n'.join([seq[i:(i+width)] for i in range(0, len(seq), width)])
 
