@@ -246,16 +246,21 @@ export -f splitFasta
 module load mummer
 
 
-
+# split genome into independent chromosome fasta files
 (cd data/pacbio; splitFasta pacbio_YJM981.fasta; splitFasta pacbio_273614.fasta)
+
+# create 1-to-1 genome mapping
 (cd data/pacbio; nucmer 273614_chrIV.fasta YJM981_chrIV.fasta; dnadiff -d out.delta;) 
 
+# filter SNPs to 'good' regions
 src/filter_snps.py data/pacbio/out.snps 20 > data/pacbio/273614.mask.filter.bed
+
+# make target SNP file for variant calling (building VCF)
 src/print_target_snps.py data/pacbio/out.snps 20 > data/pacbio/273614.mask.targets.txt
 
 
 # make bed file
-src/mask_fasta.py data/pacbio/273614_chrIV.fasta data/pacbio/273614.filter.bed --out data/pacbio/273614.mask.fasta
+src/mask_fasta.py data/pacbio/273614_chrIV.fasta data/pacbio/273614.mask.filter.bed --out data/pacbio/273614.mask.fasta
 
 
 # map
@@ -294,7 +299,7 @@ setnames(dat, c('CHROM','POS',' ID','REF','ALT','QUAL','FILTER','INFO','FORMAT',
 windowSize <- 2000
 dat[, bin := cut(POS, breaks=seq(0,windowSize+max(dat$POS), windowSize))]
 dat[, bin := as.numeric(factor(bin))]
-ggplot(data=dat[, list(POS, fractionAlt = sum(GT==1)/.N), by=bin][fractionAlt > 0.9 | fractionAlt < 0.1], aes(x=POS, y=fractionAlt)) + geom_point()
+ggplot(data=dat[, list(POS, fractionAlt = sum(GT==1)/.N), by=bin][fractionAlt > 0.95 | fractionAlt < 0.05], aes(x=POS, y=fractionAlt)) + geom_point()
 
 library(foreach)
 
@@ -315,4 +320,28 @@ dat.ag <- dat[, list(.N, fractionAlt = sum(GT==1)/.N), by=bin]
 dat.ag[, POS := windowSize*bin]
 ggplot(dat.ag[fractionAlt %in% c(0,1) & N > 1], aes(x=POS, y=fractionAlt)) + geom_point()
 
+```
+
+
+# Make genotypes
+using `src/calculateLD.R` to write `data/vcf/chrIV/genotypes.mat` then `src/write_ped.py` to convert
+to ped format for `PLINK`
+
+```
+python src/write_ped.py data/vcf/chrIV/genotypes.mat > data/vcf/chrIV/genotypes.ped
+python src/write_map.py data/vcf/chrIV/genotypes.mat > data/vcf/chrIV/genotypes.map
+
+plink --file data/vcf/chrIV/genotypes --map3 --missing-genotype N
+plink --bfile plink --r2 inter-chr --ld-window-r2 0
+
+library(data.table)
+library(ggplot2)
+library(viridis)
+dat <- fread('plink.ld')
+ggplot(dat, aes(x=BP_A, y=BP_B, fill=R2)) + geom_tile() + theme(plot.background = element_rect(fill = "black")) +
+theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()
+        ) +
+scale_fill_viridis()
 ```

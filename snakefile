@@ -16,7 +16,7 @@ CHROMOSOMES=['IV']
 # rule targets identifies the list of final output files to generate
 rule targets:
     """Defines the set of files desired at end of pipeline"""
-    input: expand("data/vcf/{cross}_{plate}_{well}_chr{chromosome}.vcf", cross=CROSS, plate=PLATES[0:2], well=WELLS[0:2], chromosome=CHROMOSOMES)
+    input: expand("data/vcf/chr{chromosome}/{cross}_{plate}_{well}_chr{chromosome}.vcf", cross=CROSS, plate=PLATES, well=WELLS, chromosome=CHROMOSOMES)
 
 
 
@@ -37,23 +37,25 @@ rule targets:
 #             -in {output}
 #         """
 
-# rule split_fastas:
-#     input:  expand('data/pacbio/pacbio_{strain}.fasta', strain=STRAINS[0]),
-#             expand('data/pacbio/pacbio_{strain}.fasta', strain=STRAINS[0],)
-#     output: 'data/pacbio/{strain}_chrIV.fasta'
-#     threads: 1
-#     resources:
-#         mem_mb = 1024*2,
-#         runtime_min = 5
-#     shell:
-#         """
-#         cd data/pacbio
-#         awk -F "(^>|\t| )" '{if($0 ~ /^>/) {s=$2".fasta";  print ">"$2 > s} else print > s}' {input}
-#         """
+rule split_fastas:
+    input:  expand('data/pacbio/pacbio_{strain}.fasta', strain=STRAINS[0]),
+            expand('data/pacbio/pacbio_{strain}.fasta', strain=STRAINS[0],)
+    output: 'data/pacbio/{strain}_chrIV.fasta'
+    threads: 1
+    resources:
+        mem_mb = 1024*2,
+        runtime_min = 5
+    shell:
+        """
+        cd data/pacbio
+        awk -F "(^>|\t| )" '{if($0 ~ /^>/) {s=$2".fasta";  print ">"$2 > s} else print > s}' {input}
+        """
         
 rule run_mummer:
-    input:  expand('data/pacbio/{strain}_chr{chromosome}.fasta', strain=STRAINS, chromosome=CHROMOSOMES)
-    output: 'data/mummer/chr{chromosome}.delta', 'data/mummer/chr{chromosome}snps'
+    input:  
+        strain1='data/pacbio/273614_chr{chromosome}.fasta',
+        strain2='data/pacbio/YJM981_chr{chromosome}.fasta'
+    output: 'data/mummer/chr{chromosome}.delta', 'data/mummer/chr{chromosome}.snps'
     threads: 1
     resources:
         mem_mb = 1024*2,
@@ -61,13 +63,16 @@ rule run_mummer:
     shell:
         """
         module load mummer
+        infasta1=$(realpath {input.strain1})
+        infasta2=$(realpath {input.strain2})
+        mkdir -p data/mummer
         cd data/mummer
-        nucmer {input}
-        dnadiff -d chr{chromosome}.delta
+        nucmer -p chr{wildcards.chromosome} ${{infasta1}} ${{infasta2}} 
+        dnadiff -p chr{wildcards.chromosome} -d chr{wildcards.chromosome}.delta
         """
 
-rule filter_snps:
-    input:  'data/mummer/chr{chromosome}.delta'
+rule print_filter_bed:
+    input:  'data/mummer/chr{chromosome}.snps'
     output: 'data/mummer/273614_chr{chromosome}.mask.filter.bed'
     threads: 1
     resources:
@@ -78,9 +83,9 @@ rule filter_snps:
         src/filter_snps.py {input} 20 > {output}
         """
 
-rule print_target_snps:
+rule print_vcf_targets:
     input:  'data/mummer/chr{chromosome}.snps'
-    output: 'data/mummer/273614.chr{chromosome}.targets.txt'
+    output: 'data/mummer/273614_chr{chromosome}.targets.txt'
     threads: 1
     resources:
         mem_mb = 1024*2,
@@ -95,7 +100,7 @@ rule print_target_snps:
 
 rule mask_fasta:
     input: 
-        fasta = 'data/mummer/273614_chr{chromosome}.fasta',
+        fasta = 'data/pacbio/273614_chr{chromosome}.fasta',
         bed = 'data/mummer/273614_chr{chromosome}.mask.filter.bed'
     output:
         fasta = 'data/mummer/273614_chr{chromosome}.mask.fasta'
@@ -114,12 +119,22 @@ rule index_masked_fasta:
     threads: 1
     resources:
         mem_mb = 1024*4,
-        runtime_min = 15
+        runtime_min = 5
     container: "library://wellerca/pseudodiploidy/mapping:latest"
     shell:
         """
         bwa index {input}
         """
+
+# # PLOT
+# library(data.table)
+# library(ggplot2)
+# dat <- fread(paste0('data/vcf/', sample, '.vcf'), skip="#CHROM")
+# setnames(dat, c('CHROM','POS',' ID','REF','ALT','QUAL','FILTER','INFO','FORMAT','GT'))
+# windowSize <- 2000
+# dat[, bin := cut(POS, breaks=seq(0,windowSize+max(dat$POS), windowSize))]
+# dat[, bin := as.numeric(factor(bin))]
+# ggplot(data=dat[, list(POS, fractionAlt = sum(GT==1)/.N), by=bin][fractionAlt > 0.95 | fractionAlt < 0.05], aes(x=POS, y=fractionAlt)) + geom_point()
 
 # rule convert_sam_to_fasta:
 #     input: "data/3003.sam.zip"
@@ -161,8 +176,8 @@ rule index_masked_fasta:
 rule convert_fastq:
     input:
         zipfile = "data/{cross}.sam.zip",
-        header = 'data/header-3003.txt',
-    output: 'data/fastq/{cross}_{plate}_{well}.fastq'
+        header = 'data/header-3003.txt'
+    output: temporary('data/fastq/{cross}_{plate}_{well}.fastq')
     threads: 1
     resources:
         mem_mb = 1024*2,
@@ -180,44 +195,52 @@ rule convert_fastq:
 
 
 rule bwa_map:
-    input: 'data/fastq/{cross}_{plate}_{well}.fastq'
-    output: 'data/bam/{cross}_{plate}_{well}_chr{chromosome}.bam'
+    input: 
+        sample_fastq='data/fastq/{cross}_{plate}_{well}.fastq',
+        ref_fasta='data/mummer/273614_chr{chromosome}.mask.fasta',
+        indexed_ref='data/mummer/273614_chr{chromosome}.mask.fasta.bwt'
+    output: 
+        bam='data/bam/{cross}_{plate}_{well}_chr{chromosome}.bam',
+        bai='data/bam/{cross}_{plate}_{well}_chr{chromosome}.bam.bai'
     threads: 4
     resources:
         mem_mb = 1024*4,
-        runtime_min = 5,
+        runtime_min = 10,
     container: "library://wellerca/pseudodiploidy/mapping:latest"
 
     shell:
         """
-        src/bwa_map.sh {input} data/mummer/273614_chr{wildcards.chromosome}.mask.fasta
+        bwa mem {input.ref_fasta} {input.sample_fastq} | \
+        samtools view -hb - | \
+        samtools sort - > {output.bam}
+        samtools index {output.bam}
         """
 
 rule mpileup:
     input:
         targets='data/mummer/273614_chr{chromosome}.targets.txt',
-        bam = 'data/bam/{cross}_{plate}_{well}_chr{chromosome}.bam'
-    output: 'data/vcf/{cross}_{plate}_{well}_chr{chromosome}.vcf'
+        bam = 'data/bam/{cross}_{plate}_{well}_chr{chromosome}.bam',
+        bai = 'data/bam/{cross}_{plate}_{well}_chr{chromosome}.bam.bai'
+    output: 
+        vcf='data/vcf/chr{chromosome}/{cross}_{plate}_{well}_chr{chromosome}.vcf'
     threads: 4
     resources:
         mem_mb = 1024*4,
         runtime_min = 5,
-    container: "library://wellerca/pseudodiploidy/mapping:latest"
     shell:
         """
         module load samtools
         bcftools mpileup \
             --targets-file {input.targets} \
-            --fasta-ref 'data/mummer/273614_chr{wildcards.chromosome}.mask' \
+            --fasta-ref 'data/mummer/273614_chr{wildcards.chromosome}.mask.fasta' \
             {input.bam} | \
             bcftools call \
             --ploidy 1 -m -Ob | \
             bcftools view | \
             sed 's/1:.*$/1/g' | \
-            grep -v "^##" > {output}
+            grep -v "^##" > {output.vcf}
         """
 
-# map
 
 # src/bwa_map.sh 3003_G1_01.fastq 273614.mask
 # src/bwa_map.sh 3003_G1_02.fastq 273614.mask
