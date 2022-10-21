@@ -2,6 +2,7 @@
 
 # Notes
 
+Bioproject hosted on NCBI [here](https://www.ncbi.nlm.nih.gov/sra?linkname=bioproject_sra_all&from_uid=549760)
 
 Cross 273614 x YJM981 hosted on [NCBI](https://www.ncbi.nlm.nih.gov/sra/SRX6097474%5baccn%5d).
 
@@ -344,4 +345,165 @@ theme(panel.background = element_blank(),
         panel.grid.minor = element_blank()
         ) +
 scale_fill_viridis()
+```
+
+### UPDATED 10-19-2022
+
+function get_samfile_list() {
+    local RUN=${1}
+    local samfiles=$(zip -sf ${RUN}.sam.zip | tail -n +2 | head -n -1)
+    echo ${samfiles}
+}
+
+# Print only reads from fastq file
+zcat $file | tail -n +2 | awk 'NR%4==1' > onlyreads.txt
+
+function build_fastq() {
+    local RUN=${1}
+    local ZIP_FILENAME=${RUN}.sam.zip
+    local SAM_FILENAME=${2}
+    local FILESTEM=$(echo ${SAM_FILENAME%.sam})
+    local CROSS=$(echo $FILESTEM | cut -d '_' -f 1)
+    local PLATE=$(echo $FILESTEM | cut -d '_' -f 2)
+    local WELL=$(echo $FILESTEM | cut -d '_' -f 3)
+    samtools fastq \
+    -1 ${RUN}_${PLATE}_${WELL}.fastq \
+    -2 ${RUN}_${PLATE}_${WELL}.fastq \
+    -0 ${RUN}_${PLATE}_${WELL}.fastq \
+    -s ${RUN}_${PLATE}_${WELL}.fastq \
+    <(cat ${RUN}.header.txt <(unzip -p  ${ZIP_FILENAME} ${CROSS}_${PLATE}_${WELL}.sam))
+}
+
+export -f build_fastq
+
+function build_header() {
+    local RUN=${1}
+    local GZ_FILE=${RUN}.sam.gz
+    local ZIP_FILE=${RUN}.sam.zip
+    # get cross ID
+    local CROSS=$(zip -sf ${ZIP_FILE} | head -n 2 | tail -n 1 | xargs echo -n | cut -d "_" -f 1)
+    # Extract full header
+    zcat ${GZ_FILE} | head -n 30000 | grep "^@" > ${RUN}.header.full.txt
+
+    # Include all @HD lines
+    grep "^@HD" ${RUN}.header.full.txt > ${RUN}.header.txt
+
+    # Include all @SQ lines
+    grep "^@SQ" ${RUN}.header.full.txt >> ${RUN}.header.txt
+
+    # Include all @RG lines that include $RUN
+    grep "^@RG" ${RUN}.header.full.txt | grep "ID:$CROSS"  >> ${RUN}.header.txt
+
+    # Include all @PG lines that include $RUN
+    grep "^@PG" ${RUN}.header.full.txt | grep "$CROSS" >> ${RUN}.header.txt
+
+    # remove initial tmp header
+    rm ${RUN}.header.full.txt
+}
+
+export -f build_header
+
+## Reconstruct header
+
+RUN='SRR9330831'
+RUN='SRR9330810'
+
+samfile_list=($(get_samfile_list $RUN))
+
+for samfile in ${samfile_list[@]}; do
+    build_fastq ${RUN} ${samfile}
+done &
+
+ls /data/SBGE/cory/${RUN}*.fastq | zip -@ -j ${RUN}.fastq.zip &
+
+sinteractive --mem=8G --gres=lscratch:200
+
+cd /lscratch/${SLURM_JOB_ID}
+module load samtools
+
+RUN='SRR9330831'
+RUN='SRR9330810'
+
+samfile_list=($(get_samfile_list $RUN))
+
+for samfile in ${samfile_list[@]}; do
+    build_fastq ${RUN} ${samfile}
+done &
+
+Now have `SRR9330831.fastq.zip` and `SRR9330810.fastq.zip`
+
+
+Renaming and reformatting necessary pacbio fastas
+
+sed 's/MSY26_/RM_pacbio_/g' MSY26.fasta > RM_pacbio.fasta
+sed 's/MSY27_/YPS163_pacbio_/g' MSY27.fasta > YPS163_pacbio.fasta
+sed 's/MSY38_/CBS2888_pacbio_/g' MSY38.fasta > CBS2888_pacbio.fasta
+sed 's/MSY39_/CLIB219_pacbio_/g' MSY39.fasta > CLIB219_pacbio.fasta
+
+
+
+python ~/pacbio-yeast-genomes/extract_fasta_range.py \
+    CBS2888_pacbio.fasta 1 999999999 \
+    --header-search "chrX" > CBS2888_chrX.fasta
+
+sed -i "s/\:1\-999999999//g" CBS2888_chrX.fasta
+
+python ~/pacbio-yeast-genomes/extract_fasta_range.py \
+    CBS2888_pacbio.fasta 1 999999999 \
+    --header-search "chrXV" > CBS2888_chrXV.fasta
+
+sed -i "s/\:1\-999999999//g" CBS2888_chrXV.fasta
+
+
+python ~/pacbio-yeast-genomes/extract_fasta_range.py \
+    CBS2888_pacbio.fasta 1 999999999 \
+    --header-search "chrVII" > CBS2888_chrVII.fasta
+
+sed -i "s/\:1\-999999999//g" CBS2888_chrVII.fasta
+
+
+
+python ~/pacbio-yeast-genomes/extract_fasta_range.py \
+    CLIB219_pacbio.fasta 1 999999999 \
+    --header-search "chrX" > CLIB219_chrX.fasta
+
+sed -i "s/\:1\-999999999//g" CLIB219_chrX.fasta
+
+python ~/pacbio-yeast-genomes/extract_fasta_range.py \
+    CLIB219_pacbio.fasta 1 999999999 \
+    --header-search "chrXV" > CLIB219_chrXV.fasta
+
+sed -i "s/\:1\-999999999//g" CLIB219_chrXV.fasta
+
+python ~/pacbio-yeast-genomes/extract_fasta_range.py \
+    CLIB219_pacbio.fasta 1 999999999 \
+    --header-search "chrVII" > CLIB219_chrVII.fasta
+
+sed -i "s/\:1\-999999999//g" CLIB219_chrVII.fasta
+
+
+
+python ~/pacbio-yeast-genomes/extract_fasta_range.py \
+    RM_pacbio.fasta 1 999999999 \
+    --header-search "chrVII" > RM_chrVII.fasta
+
+sed -i "s/\:1\-999999999//g" RM_chrVII.fasta
+
+python ~/pacbio-yeast-genomes/extract_fasta_range.py \
+    YPS163_pacbio.fasta 1 999999999 \
+    --header-search "chrVII" > YPS163_chrVII.fasta
+
+sed -i "s/\:1\-999999999//g" YPS163_chrVII.fasta
+
+Make blast DBs
+
+for file in *.fasta; do makeblastdb -dbtype nucl -in ${file}; done
+
+# Submit Jobs
+```bash
+sbatch ~/pacbio-yeast-genomes/src/map_cross.slurm SRR9330831 CBS2888 CLIB219 chrVII
+sbatch ~/pacbio-yeast-genomes/src/map_cross.slurm SRR9330831 CBS2888 CLIB219 chrX
+sbatch ~/pacbio-yeast-genomes/src/map_cross.slurm SRR9330831 CBS2888 CLIB219 chrXV
+
+sbatch ~/pacbio-yeast-genomes/src/map_cross.slurm SRR9330810 RM YPS163 chrVII
 ```
