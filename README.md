@@ -507,3 +507,157 @@ sbatch ~/pacbio-yeast-genomes/src/map_cross.slurm SRR9330831 CBS2888 CLIB219 chr
 
 sbatch ~/pacbio-yeast-genomes/src/map_cross.slurm SRR9330810 RM YPS163 chrVII
 ```
+
+
+awk '$11~"CBS2888_pacbio_chrX$"' out.snps > out.fixed.snps
+
+# Plot
+```R
+library(data.table)
+library(ggplot2)
+
+files <- list.files(pattern="*.call")
+dat <- fread(files[1])
+dat[, "#CHROM" := NULL]
+setkey(dat, POS)
+
+for(file in files[2:length(files)]) {
+    dat.tmp <- fread(file, select=c(2,5))
+    dat.tmp <- dat.tmp[!duplicated(POS)]
+    setkey(dat.tmp, POS)
+    dat <- merge(dat, dat.tmp, all=TRUE)
+}
+
+dat.long <- melt(dat, measure.vars=colnames(dat)[4:length(colnames(dat))], variable.name="sample",value.name="haplotype")[!is.na(haplotype)]
+
+ggplot(dat.long, aes(x=POS, y=sample, color=haplotype, fill=haplotype)) + geom_tile()
+
+calculate_ld <- function(ab, a, b) {
+    (ab - a*b)^2 / (a*(1-a)*b*(1-b))
+}
+
+dat.long[ALT != '.']
+
+get_ld <- function(pos1, pos2, DT) {
+    DT.tmp <- DT[POS %in% c(pos1, pos2)]
+    bothalleles <- DT.tmp[, .N, by=sample][N==2][,sample]
+    DT.tmp <- DT.tmp[sample %in% bothalleles]
+    N <- length(bothalleles)
+    ab_N <- nrow(DT.tmp[, .N, by=list(sample, haplotype)][haplotype==0 & N==2])
+    ab <- ab_N/N
+    a <- nrow(DT[POS==pos1 & haplotype == 0])/N
+    b <- nrow(DT[POS==pos2 & haplotype == 0])/N
+    r2 <- (ab - a*b)^2 / (a*(1-a)*b*(1-b))
+    return(data.table(pos1, pos2, r2))
+}
+
+positions <- sort(unique(dat.long$POS))[1:100]
+
+out <- foreach(idx1=1:(length(positions)-1), .combine='rbind') %do% {
+    foreach(idx2=idx1+1 : length(positions), .combine='rbind') %do% {
+        pos_1 <- positions[idx1]
+        pos_2 <- positions[idx2]
+        get_ld(pos_1, pos_2, dat.long)
+    }
+}
+
+ggplot(out[!is.na(pos2)], aes(x=pos1, y=pos2, fill=r2))+ geom_tile()
+
+```
+
+python ~/pacbio-yeast-genomes/src/write_ped.py genotypes.mat > genotypes.ped
+python ~/pacbio-yeast-genomes/src/write_map.py genotypes.mat > genotypes.map
+
+
+plink --file genotypes --map3 --missing-genotype N
+plink --bfile plink --r2 inter-chr --ld-window-r2 0
+
+library(data.table)
+library(ggplot2)
+library(viridis)
+dat <- fread('plink.ld')
+ggplot(dat, aes(x=BP_A, y=BP_B, fill=R2)) + geom_tile() + theme(plot.background = element_rect(fill = "black")) +
+theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()
+        ) +
+scale_fill_viridis()
+
+```python
+import sys
+
+file1 = sys.argv[1]
+file2 = sys.argv[2]
+
+with open(file1, 'r') as infile:
+    file1_text = [x.strip() for x in infile.readlines()]
+
+with open(file2, 'r') as infile:
+    file2_text = [x.strip() for x in infile.readlines()]
+
+for i in range(len(file1_text)):
+    firstGenos = file1_text[i]
+    secondGenos = '\t'.join(file2_text[i].split()[6:])
+    output = firstGenos + '\t' + secondGenos
+    print(output)
+```
+
+~/pacbio-yeast-genomes/mergePed.py chrX.ped chr15.ped  > merged.ped
+cat chrX.map chr15.map > merged.map
+
+plink --file merged --map3 --missing-genotype N
+plink --bfile plink --r2 inter-chr --ld-window-r2 0
+
+# same chrom
+library(data.table)
+library(ggplot2)
+library(viridis)
+dat <- fread('plink.ld')
+ggplot(dat[, aes(x=BP_A, y=BP_B, fill=R2)) + geom_tile() + theme(plot.background = element_rect(fill = "black")) +
+theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()
+        ) +
+scale_fill_viridis()
+
+# cross chrom
+library(data.table)
+library(ggplot2)
+library(viridis)
+dat <- fread('plink.ld')
+
+g1 <- ggplot(dat[CHR_A =="23" & CHR_B == "23"], aes(x=BP_A, y=BP_B, fill=R2)) + 
+geom_rect(data=NULL,aes(xmin=-Inf,xmax=Inf,ymin=-Inf,ymax=Inf), fill="black") +
+geom_tile() +
+theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()
+        ) +
+scale_fill_viridis() +
+labs(x="chrX", y="chrX")
+
+
+g2 <- ggplot(dat[CHR_A =="15" & CHR_B == "15"], aes(x=BP_A, y=BP_B, fill=R2)) + 
+geom_rect(data=NULL,aes(xmin=-Inf,xmax=Inf,ymin=-Inf,ymax=Inf), fill="black") +
+geom_tile() +
+theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()
+        ) +
+scale_fill_viridis() +
+labs(x="chrXV", y="chrXV")
+
+
+g3 <- ggplot(dat[CHR_A =="15" & CHR_B == "23"], aes(x=BP_A, y=BP_B, fill=R2)) + 
+geom_rect(data=NULL,aes(xmin=-Inf,xmax=Inf,ymin=-Inf,ymax=Inf), fill="black") +
+geom_tile() +
+theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()
+        ) +
+scale_fill_viridis() +
+labs(x="chrXV", y="chrX")
+
+ggsave(g1, file="chrX_chrX.png")
+ggsave(g2, file="chrXV_chrXV.png")
+ggsave(g3, file="chrXV_chrX.png")
