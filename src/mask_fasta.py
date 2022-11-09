@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 '''combines masking bed file + fasta file and returns masked fasta file'''
 import sys
 import argparse

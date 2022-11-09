@@ -4,12 +4,12 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
-#SBATCH --time=4:00:00
+#SBATCH --time=1:00:00
 
-RUN=${1}
-STRAIN1=${2}
-STRAIN2=${3}
-CHR=${4}
+RUN="SRR9330831"
+STRAIN1="CBS2888"
+STRAIN2="CLIB219"
+CHR="chrXV"
 
 run_mummer() {
     module load mummer
@@ -27,7 +27,7 @@ filter_snps() {
     local strain2=${2}
     local chr=${3}
     local cross="${strain1}_${strain2}"
-   python3 ~/pacbio-yeast-genomes/src/filter_snps.py ${cross}_${chr}.snps 20 > ${cross}_${chr}.mask.filter.bed
+   python ~/pacbio-yeast-genomes/src/filter_snps.py ${cross}_${chr}.snps 20 > ${cross}_${chr}.mask.filter.bed
 }
 export -f filter_snps
 
@@ -39,7 +39,7 @@ print_vcf_targets() {
     local filter_dist='20'
     local input="${cross}_${chr}.snps"
     local output="${cross}_${chr}.targets.txt"
-    python3 ~/pacbio-yeast-genomes/src/print_target_snps.py ${input} ${filter_dist} > ${output}
+    python ~/pacbio-yeast-genomes/src/print_target_snps.py ${input} ${filter_dist} > ${output}
 }
 export -f print_vcf_targets
 
@@ -51,7 +51,7 @@ mask_ref_fasta() {
     local input_fasta="${strain1}_${chr}.fasta"
     local input_bed="${cross}_${chr}.mask.filter.bed"
     local output="${cross}_${chr}.mask.fasta"
-    python3 ~/pacbio-yeast-genomes/src/mask_fasta.py ${input_fasta} ${input_bed} --out ${output}
+    python ~/pacbio-yeast-genomes/src/mask_fasta.py ${input_fasta} ${input_bed} --out ${output}
 }
 export -f mask_ref_fasta
 
@@ -87,7 +87,7 @@ map_and_call() {
 
     samtools index ${id}.bam
     bcftools mpileup \
-        --targets-file ${cross}_${chr}.targets.txt \
+        --targets-file targets.txt \
         --fasta-ref ${ref_fasta} \
         ${id}.bam | \
         bcftools call \
@@ -101,29 +101,39 @@ map_and_call() {
 }
 export -f map_and_call
 
-prep_for_bwa() {
-    local strain1=${1}
-    local strain2=${2}
-    local chr=${3}
-    run_mummer ${strain1} ${strain2} ${chr}
-    filter_snps ${strain1} ${strain2} ${chr}
-    print_vcf_targets ${strain1} ${strain2} ${chr}
-    mask_ref_fasta ${strain1} ${strain2} ${chr}
-    index_masked_ref_fasta ${strain1} ${strain2} ${chr}
-}
 
 # define temporary folder on ramdisk
 TMP="/dev/shm/${USER}/${SLURM_JOB_ID}/"
-mkdir -p ${TMP} && cd ${TMP}
-
+mkdir -p ${TMP}
 
 # move requisite files to ramdisk
-cp /data/SBGE/cory/pacbio/${RUN}.fastq.zip ${TMP}
-unzip -p /data/SBGE/cory/pacbio/pacbio-assemblies.zip ${STRAIN1}_${CHR}.fasta > ${TMP}/${STRAIN1}_${CHR}.fasta
-unzip -p /data/SBGE/cory/pacbio/pacbio-assemblies.zip ${STRAIN2}_${CHR}.fasta > ${TMP}/${STRAIN2}_${CHR}.fasta
+cp /data/SBGE/cory/pacbio/SRR9330831.fastq.zip ${TMP}
+cp /data/SBGE/cory/pacbio/CBS2888_chrXV.fasta ${TMP}
+cp /data/SBGE/cory/pacbio/CLIB219_chrX.fasta ${TMP}
+cp /data/SBGE/cory/pacbio/CLIB219_chrXV.fasta ${TMP}
 
 
-prep_for_bwa ${STRAIN1} ${STRAIN2} ${CHR}
+cd ${TMP}
+
+cat CLIB219_chrX.fasta CLIB219_chrXV.fasta > CLIB219_merged.fasta
+
+module load mummer
+module load python/3.9
+
+nucmer CBS2888_chrXV.fasta CLIB219_merged.fasta && \
+dnadiff -d out.delta
+
+awk '$11~"CBS2888_pacbio_chrXV$"' out.snps > out.fixed.snps
+rm out.snps
+mv out.fixed.snps out.snps
+
+python ~/pacbio-yeast-genomes/src/filter_snps.py out.snps 20 > mask.filter.bed
+
+python ~/pacbio-yeast-genomes/src/print_target_snps.py out.snps 20 > targets.txt
+
+python ~/pacbio-yeast-genomes/src/mask_fasta.py CBS2888_chrXV.fasta mask.filter.bed --out CBS2888_CLIB219_chrXV.mask.fasta
+
+bwa index CBS2888_CLIB219_chrXV.mask.fasta
 
 parallel -j 8 map_and_call {} \
     ::: ${RUN} \
@@ -133,11 +143,7 @@ parallel -j 8 map_and_call {} \
     ::: {G,R}{1,2,3,4,5} \
     ::: {01..96}
 
-    # ::: {G,R}{1,2,3,4,5} \
-    # ::: {01..96}
-
 # combine and export 
-#ls *.call | tar -czv --files-from - -f /data/SBGE/cory/pacbio/${RUN}_${STRAIN1}_${STRAIN2}_${CHR}.call.tar.gz
-ls *.call | tar -czv --files-from - -f /data/SBGE/cory/pacbio/${RUN}_${STRAIN1}_${STRAIN2}_${CHR}.call.tar.gz
+ls *.call | tar -czv --files-from - -f /data/SBGE/cory/pacbio/${RUN}_${STRAIN1}_${STRAIN2}_${CHR}translocation2.call.tar.gz
 
 cd && rm -rf "${TMP}"

@@ -1,0 +1,177 @@
+blast:
+    pct_identity: '100'
+    e_value_cutoff: '1e-60'
+
+parents:
+    'YJM978':
+        accn: 'SRX6097465'
+        run: 'SRR9330818'
+    'YJM981':
+        accn: 'SRX6097464'
+        run: 'SRR9330819'
+    'M22':
+        accn: 'SRX6097463'
+        run: 'SRR9330820'
+    'PW5':
+        accn: 'SRX6097462'
+        run: 'SRR9330821'
+    'CLIB413':
+        accn: 'SRX6097461'
+        run: 'SRR9330822'
+    'I14':
+        accn: 'SRX6097460'
+        run: 'SRR9330823'
+    'YJM145':
+        accn: 'SRX6097459'
+        run: 'SRR9330824'
+    'YJM454':
+        accn: 'SRX6097458'
+        run: 'SRR9330825'
+    'RM':
+        accn: 'SRX6097457'
+        run: 'SRR9330826'
+    'Y10':
+        accn: 'SRX6097456'
+        run: 'SRR9330827'
+    'YPS1009':
+        accn: 'SRX6097455'
+        run: 'SRR9330828'
+    'YPS163':
+        accn: 'SRX6097454'
+        run: 'SRR9330829'
+    'BY':
+        accn: 'SRX6097449'
+        run: 'SRR9330834'
+    '273641':
+        accn: 'SRX6097448'
+        run: 'SRR9330835'
+    'CLIB219':
+        accn: 'SRX6097445'
+        run: 'SRR9330838'
+    'CBS2888':
+        accn: 'SRX6097444'
+        run: 'SRR9330839'
+
+crosses:
+    'YJM981_CBS2888':
+        accn: 'SRX6097475'
+        run: 'SRR9330808'
+        cross:
+            - 'YJM981'
+            - 'CBS2888'
+        cram_id: '3004'
+    'CBS2888_CLIB219':
+        accn: 'SRX6097452'
+        run: 'SRR9330831'
+        cross:
+            - 'CBS2888'
+            - 'CLIB219'
+        cram_id: '3043'
+    'CLIB219_M22':
+        accn: 'SRX6097451'
+        run: 'SRR9330832'
+        cross:
+            - 'CLIB219'
+            - 'M22'
+        cram_id: '3028'
+    'M22_BY':
+        accn: 'SRX6097472'
+        run: 'SRR9330811'
+        cross:
+            - 'M22'
+            - 'BY'
+        cram_id: '375'
+    'BY_RM':
+        accn: 'SRX6097446'
+        run: 'SRR9330837'
+        cross:
+            - 'BY'
+            - 'RM'
+        cram_id: 'A'
+    'RM_YPS163':
+        accn: 'SRX6097473'
+        run: 'SRR9330810'
+        cross:
+            - 'RM'
+            - 'YPS163'
+        cram_id: '376'
+    'YPS163_YJM145':
+        accn: 'SRX6097447'
+        run: 'SRR9330836'
+        cross:
+            - 'YPS163'
+            - 'YJM145'
+        cram_id: 'B'
+    'YJM145_CLIB413':
+        accn: 'SRX6097470'
+        run: 'SRR9330813'
+        cross:
+            - 'YJM145'
+            - 'CLIB413'
+        cram_id: '377'
+    'CLIB413_YJM978':
+        accn: 'SRX6097468'
+        run: 'SRR9330815'
+        cross:
+            - 'CLIB413'
+            - 'YJM978'
+        cram_id: '393'
+    'YJM978_YJM454':
+        accn: 'SRX6097471'
+        run: 'SRR9330812'
+        cross:
+            - 'YJM978'
+            - 'YJM454'
+        cram_id: '381'
+    'YJM454_YPS1009':
+        accn: 'SRX6097450'
+        run: 'SRR9330833'
+        cross:
+            - 'YJM454'
+            - 'YPS1009'
+        cram_id: '3008'
+    'YPS1009_I14':
+        accn: 'SRX6097469'
+        run: 'SRR9330814'
+        cross:
+            - 'YPS1009'
+            - 'I14'
+        cram_id: '2999'
+    'I14_Y10':
+        accn: 'SRX6097466'
+        run: 'SRR9330817'
+        cross:
+            - 'I14'
+            - 'Y10'
+        cram_id: '3000'
+    'Y10_PW5':
+        accn: 'SRX6097467'
+        run: 'SRR9330816'
+        cross:
+            - 'Y10'
+            - 'PW5'
+        cram_id: '3001'
+    'PW5_273641':
+        accn: 'SRX6097453'
+        run: 'SRR9330830'
+        cross:
+            - 'PW5'
+            - '273641'
+        cram_id: '3049'
+    '273641_YJM981':
+        accn: 'SRX6097474'
+        run: 'SRR9330809'
+        cross:
+            - '273641'
+            - 'YJM981'
+        cram_id: '3003'
+
+experiments:
+    1:
+        cross: 'CBS2888_CLIB219'
+        chromosome_roman: 'XV'
+        chromosome_arabic: '15'
+    2:
+        cross: 'YJM981_CBS2888'
+        chromosome_roman: 'XV'
+        chromosome_arabic: '15'

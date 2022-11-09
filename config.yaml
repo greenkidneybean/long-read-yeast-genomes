@@ -1,7 +1,0 @@
----
-pct_identity: '100'
-e_value_cutoff: '1e-60'
-cross: '3003'
-strains:
-    - '273614'
-    - 'YJM981'

@@ -1,9 +1,5 @@
-data/pacbio/*
-data/bam/*
-data/fastq/*
+data
 slurm*.out
-sra/*
-blast/*
 tmp/*
 *.zip
 *.ndb
@@ -16,8 +12,6 @@ tmp/*
 *.nto
 *summary.txt
 *.blast
-data/imputed/*.png
-data/imputed/*.txt
 .snakemake/*
-data/blasts/*.blast.gz
 .parallel/*
+*.pdf

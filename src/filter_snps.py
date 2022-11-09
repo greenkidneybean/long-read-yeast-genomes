@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 '''only includes snps from <snps_filename> that are 
 at least <dist_threshold> bp away from alignment mismatch'''
 
