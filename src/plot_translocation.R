@@ -7,11 +7,10 @@ library(ggthemes)
 library(viridis)
 library(cowplot)
 
-datadir <- '/home/wellerca/pacbio-yeast-genomes/data/output/'
-gitdir <- '/home/wellerca/pacbio-yeast-genomes/'
+args <- commandArgs(trailingOnly=TRUE)
+ld_file <- args[1]
 
-
-ld_files <- list.files(datadir, pattern='*_translocation.ld.txt', full.names=TRUE)
+#ld_files <- list.files('../data/output/', pattern='*_translocation.ld.txt', full.names=TRUE)
 
 plot_translocation <- function(f) {
     dat.ld <- fread(f)
@@ -53,6 +52,4 @@ plot_translocation <- function(f) {
             dpi=300)
 }
 
-for(file in ld_files) {
-        plot_translocation(file)
-}
+plot_translocation(ld_file)
