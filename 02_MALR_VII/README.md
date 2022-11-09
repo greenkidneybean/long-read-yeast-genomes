@@ -160,7 +160,7 @@ plot_association 'CLIB219'     'M22'         'CLIB219-tf4.fasta' 'chrVII'
 ## Upload to onedrive
 ```bash
 module load rclone
-rclone copy  --dry-run --max-depth 1 --include "*chrVII.pdf" ./plots nihonedrive:/Data/pacbio_genomes/02_MALR_chrVII/
+rclone copy  --max-depth 1 --include "*.pdf" ./plots nihonedrive:/Data/pacbio_genomes/02_MALR_chrVII/
 ```
 
 
