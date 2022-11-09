@@ -40,7 +40,7 @@ plot_fig <- function(assoc_filename, ld_filename) {
     scale_y_continuous(labels = seq(0, 50, 1), breaks=seq(0, 5e6, 1e5)) +
     theme(legend.position = c(0.9, 0.2))
 
-    g.out <- plot_grid(g.bar, g.ld, align = "h", nrow=2, rel_heights=c(0.2, 1))
+    g.out <- plot_grid(g.bar, g.ld, align = "hv", nrow=2, rel_heights=c(0.2, 1))
     ggsave(g.out, 
             file=paste0('plots/', strain1, '_', gene, '_', strain2, '_', chromosome, '.pdf'),
             units='cm',
