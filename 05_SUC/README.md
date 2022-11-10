@@ -75,5 +75,5 @@ plot_association 'Y10'       'PW5'       'chrI-chrIII-SUC.fasta'    'chrIII'
 ## Upload to onedrive
 ```bash
 module load rclone
-rclone copy  --max-depth 1 --include "*.pdf" ./plots nihonedrive:/Data/pacbio_genomes/05_SUC/
+rclone copy  --max-depth 1 --include "*.pdf" ./plots nihonedrive:/Data/pacbio_genomes/05_SUC
 ```
