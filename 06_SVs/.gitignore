@@ -1,0 +1,3 @@
+S288C-reference.fasta
+assemblies/*.fasta
+pairwise_alignments/*.paf
