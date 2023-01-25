@@ -46,8 +46,10 @@ Rscript src/plot_reference_alignments.R
 ```
 
 ![](/06_SVs/reference_alignment/all.png)
+
 ---
 
+```
 ## To align long-read genome assemblies to each other
 
 The script [`align_pairwise.sh`](src/align_pairwise.sh) generates `paf` using `minimap2` for all
