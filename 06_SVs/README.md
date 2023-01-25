@@ -49,10 +49,12 @@ Rscript src/plot_reference_alignments.R
 ---
 
 ## To align long-read genome assemblies to each other
+
 The script [`align_pairwise.sh`](src/align_pairwise.sh) generates `paf` using `minimap2` for all
 pairwise combinations of `fasta` within the [`assemblies`](assemblies) directory (ignoring alignment
 to itself). Alignments are done reciprocally (A to B and B to A) for `N*(N-1)` total alignments, 
 output to the [`pairwise_alignments`](pairwise_alignments) directory.
+
 ---
 
 
