@@ -35,17 +35,24 @@ ids <- fread('chromosome_ids.txt', header=FALSE)
 setnames(ids, c('accession','chr'))
 setkey(ids, accession)
 
-dat <- merge(o, ids)
-setnames(dat, 'chr', 'ref_chr')
-dat[, accession := NULL]
-dat[, strain := tstrsplit(query_chr, split='_')[1]]
-
-
 chrLvls <- c(
 'chrI','chrII','chrIII','chrIV','chrV',
 'chrVI','chrVII','chrVIII','chrIX','chrX',
 'chrXI','chrXII','chrXIII','chrXIV','chrXV',
 'chrXVI','mitochondrion')
+
+strainLvls <- c(
+'BY','273614','CBS2888','CLIB219','CLIB413','I14','M22','PW5',
+'RM','Y10','YJM145','YJM454','YJM978','YJM981','YPS1009',
+'YPS163'
+)
+dat <- merge(o, ids)
+setnames(dat, 'chr', 'ref_chr')
+dat[, accession := NULL]
+dat[, strain := tstrsplit(query_chr, split='_')[1]]
+assemblySizes <- copy(unique(dat[,c('query_chr_len','query_chr','strain')]))
+setcolorder(assemblySizes, c('strain', 'query_chr', 'query_chr_len'))
+setkey(
 
 
 
@@ -72,7 +79,6 @@ setkey(dat, sequentialID)
 
 dat2 <- merge(chrLengths, dat)
 
-
 ## ?ok?
 
 dat2[,startB := start_ref + cumulativeLength]
@@ -89,11 +95,6 @@ boxes[chr=='mitochondrion', chr := 'm']
 dat2[, spanA := end_query - start_query]
 dat2[, spanB := end_ref - start_ref]
 
-strainLvls <- c(
-'BY','273614','CBS2888','CLIB219','CLIB413','I14','M22','PW5',
-'RM','Y10','YJM145','YJM454','YJM978','YJM981','YPS1009',
-'YPS163'
-)
 
 dat2[, strain := factor(strain, levels=strainLvls)]
 
