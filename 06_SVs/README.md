@@ -42,7 +42,7 @@ sed 's/]$//g' > chromosome_ids.txt
 ### Generate alignment plot
 ```bash
 module load R/3.6.3
-Rscript src/plot_MUMandCo_alignments.R
+Rscript src/plot_MUMandCo_alignment.R
 ```
 
 ![](/06_SVs/reference_alignment/all-aligned-S288C.png)
