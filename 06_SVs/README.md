@@ -48,12 +48,14 @@ src/fix_coords.sh
 ```
 
 ### Generate alignment figure from `.coords` output
+Executing the command
 ```bash
 module load R/3.6.3
 Rscript src/plot_MUMandCo_alignment.R
 ```
-
-![](reference_alignment/all-aligned-S288C.png)
+Generates the figure outputs:
+* [`all-aligned-S288C.png`](reference_alignment/all-aligned-S288C.png) (or [pdf](reference_alignment/all-aligned-S288C.pdf))
+![]()
 
 
 ## Generate SV count figures
