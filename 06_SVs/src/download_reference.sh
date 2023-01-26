@@ -31,3 +31,9 @@ if [ "${sha256_desired}" != "${sha256_actual}" ]; then
     exit 0
 fi
 
+grep '>' ${ref_unzipped} | \
+sed -r 's/^>.*NC_/NC_/g' | \
+sed -r 's/\| .*genomic\] \[/ /g' | \
+sed -r 's/chromosome=/chr/g' | \
+sed -r 's/locat.*$/mitochondrion/g' | \
+sed 's/]$//g' > chromosome_ids.txt

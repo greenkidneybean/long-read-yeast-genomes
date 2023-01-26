@@ -1,5 +1,5 @@
 # Structural Variant Analysis for 16 Yeast Isolates
-Note: ensure 16 reference assembly `fasta` files are in the [`assemblies/`](assemblies/) directory.
+Note: ensure 16 reference assembly `fasta` files are in the [`assemblies/`](/assemblies/) directory.
 
 ```
 273614.fasta
@@ -20,24 +20,31 @@ YPS1009.fasta
 YPS163.fasta
 ```
 
-## Structural Variants vis-a-vis S288C Reference
-### Aligning long-read assemblies to reference genome
-The script [`align_reference.sh`](src/align_reference.sh) retrieves S288C reference genome (if it
-isn't already downloaded) and saves it as `S288C-reference.fasta`. The script then generates `.paf`
-alignments using `minimap2` for 16 genome assemblies within [`assemblies`](assemblies). Output is
-saved in the [`reference_alignment`](reference_alignment) directory. 
-
-## Generating ID table of S288C chromosome IDs
-Used for translating accession IDs to chr<#>
+## Retrieve reference sequence
+The script [`download_reference.sh`](src/download_reference.sh) retrieves S288C reference genome
+(if it isn't already downloaded) and saves it as `S288C-reference.fasta`. The script also generates
+the file [`chromosome_ids.txt`](chromosome_ids.txt) for translating the NCBI codes to simpler 'chr#'
+style identifiers.
 ```bash
-grep '>' S288C-reference.fasta | \
-sed -r 's/^>.*NC_/NC_/g' | \
-sed -r 's/\| .*genomic\] \[/ /g' | \
-sed -r 's/chromosome=/chr/g' | \
-sed -r 's/locat.*$/mitochondrion/g' | \
-sed 's/]$//g' > chromosome_ids.txt
+src/download_reference.sh
 ```
 
+## Aligning long-read assemblies to reference genome
+The script [`run_MUMandCo.sh`](src/run_MUMandCo.sh) generates a genome-genome alignment for one
+of the sixteen assemblies in the [`assemblies/`](/assemblies/) directory. Run all of them as a
+job array with `--array=0-15` to submit 16 jobs at once. Each individual job in the array will
+check the [`assemblies/`](/assemblies/) directory and then generate an alignment for that Nth
+assembly. Alignments are saved to the [`reference_alignment/`](/reference_alignment/) directory.
+```bash
+sbatch --array=0-15 src/run_MUMandCo.sh
+```
+
+## Remove excess lines from TSVs
+The coordinate aligned output from MUMandCo includes some extra (non-data) lines at the top.
+Trim these out by running [fix_coords.sh](src/fix_coords.sh)
+```bash
+src/fix_coords.sh
+```
 
 
 ### Generate alignment plot

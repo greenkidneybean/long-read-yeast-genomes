@@ -12,7 +12,7 @@ module load mummer/4.0.0rc1
 module load samtools/1.16.1
 module load blast/2.13.0+
 
-OUTDIR="${PWD}/MUMandCo_output/"
+OUTDIR="${PWD}/reference_alignment/"
 mkdir -p ${OUTDIR}
 
 # Define reference and assembly full path sequences
