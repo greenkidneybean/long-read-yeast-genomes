@@ -1,6 +1,3 @@
-/spin1/home/linux/wellerca/long-read-yeast-genomes/06_SVs/S288C-reference.fasta /spin1/home/linux/wellerca/long-read-yeast-genomes/06_SVs/assemblies/YPS1009.fasta
-NUCMER
-
 [S1]	[E1]	[S2]	[E2]	[LEN 1]	[LEN 2]	[% IDY]	[LEN R]	[LEN Q]	[COV R]	[COV Q]	[FRM]	[TAGS]
 1	12550	230575	217978	12550	12598	98.34	230218	231073	5.45	5.45	1	-1	ref|NC_001133|	YPS1009_chrI
 2	765	919634	918867	764	768	91.18	230218	920046	0.33	0.08	1	-1	ref|NC_001133|	YPS1009_chrXVI

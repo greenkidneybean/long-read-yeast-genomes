@@ -1,6 +1,3 @@
-/spin1/home/linux/wellerca/long-read-yeast-genomes/06_SVs/S288C-reference.fasta /spin1/home/linux/wellerca/long-read-yeast-genomes/06_SVs/assemblies/M22.fasta
-NUCMER
-
 [S1]	[E1]	[S2]	[E2]	[LEN 1]	[LEN 2]	[% IDY]	[LEN R]	[LEN Q]	[COV R]	[COV Q]	[FRM]	[TAGS]
 1	2277	7640	9918	2277	2279	90.78	230218	1095264	0.99	0.21	1	1	ref|NC_001133|	M22_chrXV
 2	2798	421013	418218	2797	2796	89.66	230218	421463	1.21	0.66	1	-1	ref|NC_001133|	M22_chrIX

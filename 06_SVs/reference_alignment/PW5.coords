@@ -1,6 +1,3 @@
-/spin1/home/linux/wellerca/long-read-yeast-genomes/06_SVs/S288C-reference.fasta /spin1/home/linux/wellerca/long-read-yeast-genomes/06_SVs/assemblies/PW5.fasta
-NUCMER
-
 [S1]	[E1]	[S2]	[E2]	[LEN 1]	[LEN 2]	[% IDY]	[LEN R]	[LEN Q]	[COV R]	[COV Q]	[FRM]	[TAGS]
 1	4777	474	5240	4777	4767	91.26	230218	228887	2.07	2.08	1	1	ref|NC_001133|	PW5_chrI
 4777	5460	7086	7776	684	691	95.54	230218	228887	0.30	0.30	1	1	ref|NC_001133|	PW5_chrI
