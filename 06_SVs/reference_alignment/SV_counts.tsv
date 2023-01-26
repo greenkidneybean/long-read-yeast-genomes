@@ -1,0 +1,965 @@
+strain	query_chr	SV_type	N
+273614	chrI	Deletion (mobile)	6
+273614	chrI	Insertion (mobile)	2
+273614	chrI	Duplication	1
+CBS2888	chrI	Insertion (mobile)	6
+CBS2888	chrI	Deletion (mobile)	4
+CBS2888	chrI	Duplication	1
+CLIB219	chrI	Inversion	1
+CLIB219	chrI	Deletion (mobile)	4
+CLIB219	chrI	Duplication	1
+CLIB219	chrI	Insertion (novel)	1
+CLIB219	chrI	Deletion (novel)	1
+CLIB413	chrI	Deletion (novel)	1
+CLIB413	chrI	Insertion (mobile)	3
+CLIB413	chrI	Duplication	2
+CLIB413	chrI	Deletion (mobile)	2
+I14	chrI	Contraction	1
+I14	chrI	Deletion (mobile)	4
+I14	chrI	Insertion (mobile)	3
+I14	chrI	Insertion (novel)	1
+M22	chrI	Translocation	2
+M22	chrI	Insertion (mobile)	4
+M22	chrI	Deletion (mobile)	4
+M22	chrI	Insertion (novel)	1
+PW5	chrI	Insertion (novel)	3
+PW5	chrI	Insertion (mobile)	6
+PW5	chrI	Deletion (mobile)	5
+PW5	chrI	Inversion	1
+PW5	chrI	Duplication	1
+RM	chrI	Contraction	1
+RM	chrI	Translocation	2
+RM	chrI	Deletion (mobile)	4
+RM	chrI	Insertion (mobile)	2
+Y10	chrI	Insertion (mobile)	6
+Y10	chrI	Deletion (mobile)	4
+Y10	chrI	Duplication	1
+YJM145	chrI	Inversion	1
+YJM145	chrI	Duplication	1
+YJM145	chrI	Insertion (mobile)	3
+YJM145	chrI	Deletion (mobile)	3
+YJM145	chrI	Insertion (novel)	1
+YJM454	chrI	Duplication	1
+YJM454	chrI	Insertion (mobile)	4
+YJM454	chrI	Deletion (mobile)	4
+YJM454	chrI	Insertion (novel)	1
+YJM978	chrI	Inversion	1
+YJM978	chrI	Insertion (mobile)	2
+YJM978	chrI	Deletion (mobile)	2
+YJM978	chrI	Deletion (novel)	1
+YJM978	chrI	Duplication	1
+YJM981	chrI	Translocation	2
+YJM981	chrI	Deletion (mobile)	5
+YJM981	chrI	Insertion (mobile)	1
+YPS1009	chrI	Inversion	1
+YPS1009	chrI	Insertion (mobile)	5
+YPS1009	chrI	Deletion (mobile)	3
+YPS1009	chrI	Deletion (novel)	3
+YPS1009	chrI	Insertion (novel)	1
+YPS163	chrI	Inversion	2
+YPS163	chrI	Deletion (mobile)	2
+YPS163	chrI	Insertion (mobile)	2
+YPS163	chrI	Deletion (novel)	1
+YPS163	chrI	Duplication	1
+273614	chrII	Insertion (mobile)	3
+273614	chrII	Deletion (mobile)	7
+273614	chrII	Duplication	1
+273614	chrII	Deletion (novel)	1
+CBS2888	chrII	Insertion (mobile)	12
+CBS2888	chrII	Deletion (mobile)	4
+CBS2888	chrII	Deletion (novel)	1
+CLIB219	chrII	Deletion (mobile)	7
+CLIB219	chrII	Insertion (mobile)	4
+CLIB219	chrII	Deletion (novel)	2
+CLIB219	chrII	Duplication	1
+CLIB413	chrII	Insertion (mobile)	3
+CLIB413	chrII	Deletion (mobile)	3
+I14	chrII	Deletion (mobile)	6
+I14	chrII	Insertion (mobile)	2
+I14	chrII	Duplication	2
+M22	chrII	Deletion (mobile)	6
+M22	chrII	Deletion (novel)	1
+M22	chrII	Insertion (mobile)	1
+PW5	chrII	Deletion (mobile)	6
+PW5	chrII	Insertion (mobile)	3
+PW5	chrII	Insertion (novel)	1
+RM	chrII	Deletion (mobile)	6
+RM	chrII	Insertion (mobile)	1
+Y10	chrII	Deletion (mobile)	3
+Y10	chrVII	Translocation	2
+Y10	chrII	Insertion (mobile)	4
+Y10	chrII	Duplication	2
+Y10	chrVII	Insertion (mobile)	11
+Y10	chrII	Insertion (novel)	1
+YJM145	chrII	Insertion (mobile)	4
+YJM145	chrII	Deletion (mobile)	6
+YJM145	chrII	Duplication	1
+YJM454	chrII	Deletion (mobile)	5
+YJM454	chrII	Insertion (mobile)	4
+YJM454	chrII	Duplication	2
+YJM978	chrII	Deletion (mobile)	6
+YJM978	chrII	Insertion (mobile)	2
+YJM978	chrII	Deletion (novel)	2
+YJM981	chrII	Deletion (novel)	1
+YJM981	chrII	Deletion (mobile)	5
+YPS1009	chrII	Insertion (mobile)	5
+YPS1009	chrII	Deletion (mobile)	7
+YPS1009	chrII	Duplication	1
+YPS163	chrII	Deletion (mobile)	4
+YPS163	chrII	Insertion (mobile)	2
+YPS163	chrII	Deletion (novel)	1
+273614	chrXII	Insertion (mobile)	8
+273614	chrIII	Deletion (mobile)	5
+273614	chrIII	Insertion (mobile)	5
+273614	chrXII	Translocation	2
+BY	chrIII	Insertion (mobile)	2
+BY	chrIII	Deletion (mobile)	1
+BY	chrIII	Duplication	2
+CBS2888	chrIII	Insertion (mobile)	4
+CBS2888	chrIII	Deletion (mobile)	5
+CBS2888	chrIII	Duplication	1
+CLIB219	chrIII	Deletion (novel)	1
+CLIB219	chrIII	Deletion (mobile)	5
+CLIB219	chrIII	Insertion (mobile)	6
+CLIB219	chrIII	Duplication	3
+CLIB413	chrIII	Insertion (mobile)	4
+CLIB413	chrIII	Deletion (mobile)	5
+CLIB413	chrXII	Translocation	2
+I14	chrIII	Deletion (mobile)	4
+I14	chrIII	Insertion (mobile)	2
+M22	chrIII	Deletion (mobile)	3
+M22	chrIII	Insertion (mobile)	4
+M22	chrXII	Translocation	2
+M22	chrXII	Insertion (mobile)	6
+M22	chrIII	Duplication	1
+PW5	chrIII	Deletion (mobile)	5
+PW5	chrIII	Insertion (mobile)	3
+PW5	chrIII	Duplication	2
+PW5	chrIII	Deletion (novel)	1
+RM	chrIII	Insertion (novel)	1
+RM	chrIII	Deletion (mobile)	4
+RM	chrIII	Insertion (mobile)	3
+RM	chrIII	Contraction	1
+RM	chrIII	Inversion	1
+Y10	chrIII	Deletion (mobile)	6
+Y10	chrIII	Insertion (mobile)	3
+Y10	chrIII	Duplication	1
+Y10	chrIII	Deletion (novel)	1
+Y10	chrIII	Insertion (novel)	1
+YJM145	chrIII	Duplication	1
+YJM145	chrIII	Insertion (mobile)	2
+YJM145	chrIII	Deletion (mobile)	4
+YJM454	chrIII	Insertion (mobile)	5
+YJM454	chrIII	Deletion (mobile)	4
+YJM454	chrIII	Insertion (novel)	1
+YJM454	chrIII	Duplication	1
+YJM978	chrIII	Deletion (mobile)	5
+YJM978	chrIII	Insertion (mobile)	3
+YJM978	chrIII	Duplication	2
+YJM981	chrXII	Translocation	2
+YJM981	chrIII	Insertion (mobile)	2
+YJM981	chrIII	Deletion (mobile)	3
+YJM981	chrIII	Duplication	1
+YPS1009	chrIII	Insertion (mobile)	7
+YPS1009	chrIII	Insertion (novel)	1
+YPS1009	chrIII	Deletion (mobile)	5
+YPS1009	chrIII	Duplication	1
+YPS163	chrIII	Deletion (mobile)	6
+YPS163	chrIII	Insertion (mobile)	4
+YPS163	chrIII	Insertion (novel)	1
+YPS163	chrIII	Duplication	2
+273614	chrIV	Contraction	1
+273614	chrIV	Deletion (mobile)	13
+273614	chrIV	Insertion (mobile)	10
+273614	chrIV	Insertion (novel)	1
+273614	chrIV	Deletion (novel)	1
+BY	chrIV	Insertion (novel)	1
+CBS2888	chrIV	Deletion (novel)	4
+CBS2888	chrIV	Insertion (mobile)	9
+CBS2888	chrIV	Contraction	2
+CBS2888	chrIV	Deletion (mobile)	19
+CLIB219	chrIV	Deletion (novel)	5
+CLIB219	chrIV	Contraction	1
+CLIB219	chrIV	Duplication	3
+CLIB219	chrIV	Insertion (mobile)	8
+CLIB219	chrIV	Deletion (mobile)	17
+CLIB413	chrIV	Translocation	2
+CLIB413	chrIV	Insertion (mobile)	7
+CLIB413	chrIV	Contraction	1
+CLIB413	chrIV	Deletion (mobile)	11
+CLIB413	chrIV	Deletion (novel)	4
+I14	chrIV	Deletion (mobile)	12
+I14	chrIV	Insertion (mobile)	5
+I14	chrIV	Contraction	1
+I14	chrIV	Duplication	1
+I14	chrIV	Deletion (novel)	4
+M22	chrIV	Insertion (mobile)	3
+M22	chrIV	Contraction	2
+M22	chrIV	Deletion (mobile)	11
+M22	chrIV	Deletion (novel)	3
+PW5	chrIV	Deletion (novel)	5
+PW5	chrIV	Insertion (mobile)	10
+PW5	chrIV	Duplication	3
+PW5	chrIV	Contraction	4
+PW5	chrIV	Deletion (mobile)	20
+PW5	chrIV	Insertion (novel)	1
+RM	chrIV	Duplication	2
+RM	chrIV	Deletion (novel)	4
+RM	chrIV	Contraction	1
+RM	chrIV	Deletion (mobile)	11
+RM	chrIV	Insertion (mobile)	2
+Y10	chrIX	Translocation	4
+Y10	chrIX	Deletion (mobile)	8
+Y10	chrIX	Insertion (mobile)	3
+Y10	chrIV	Deletion (mobile)	18
+Y10	chrIV	Insertion (mobile)	11
+Y10	chrIV	Deletion (novel)	4
+YJM145	chrIV	Contraction	3
+YJM145	chrIV	Duplication	2
+YJM145	chrIV	Deletion (mobile)	13
+YJM145	chrIV	Deletion (novel)	4
+YJM145	chrIV	Insertion (mobile)	5
+YJM454	chrIV	Insertion (mobile)	3
+YJM454	chrIV	Deletion (mobile)	14
+YJM454	chrIV	Duplication	1
+YJM454	chrIV	Contraction	2
+YJM454	chrIV	Deletion (novel)	2
+YJM978	chrIV	Deletion (novel)	4
+YJM978	chrIV	Contraction	2
+YJM978	chrIV	Insertion (mobile)	7
+YJM978	chrIV	Deletion (mobile)	18
+YJM981	chrIV	Insertion (mobile)	3
+YJM981	chrIV	Deletion (novel)	4
+YJM981	chrIV	Contraction	1
+YJM981	chrIV	Duplication	1
+YJM981	chrIV	Insertion (novel)	1
+YJM981	chrIV	Deletion (mobile)	10
+YPS1009	chrIV	Deletion (mobile)	19
+YPS1009	chrIV	Duplication	1
+YPS1009	chrIV	Deletion (novel)	3
+YPS1009	chrIV	Insertion (mobile)	17
+YPS1009	chrIV	Contraction	2
+YPS163	chrIV	Deletion (novel)	3
+YPS163	chrIV	Insertion (mobile)	6
+YPS163	chrIV	Deletion (mobile)	18
+YPS163	chrIV	Duplication	1
+273614	chrV	Insertion (mobile)	10
+273614	chrV	Deletion (novel)	3
+273614	chrV	Deletion (mobile)	9
+CBS2888	chrV	Deletion (mobile)	9
+CBS2888	chrV	Insertion (mobile)	4
+CLIB219	chrV	Deletion (mobile)	9
+CLIB219	chrV	Insertion (mobile)	5
+CLIB219	chrV	Insertion (novel)	1
+CLIB413	chrV	Insertion (mobile)	8
+CLIB413	chrV	Deletion (novel)	1
+CLIB413	chrV	Deletion (mobile)	8
+I14	chrV	Deletion (mobile)	8
+I14	chrV	Insertion (mobile)	5
+M22	chrV	Insertion (mobile)	2
+M22	chrV	Deletion (novel)	1
+M22	chrV	Deletion (mobile)	6
+PW5	chrV	Deletion (mobile)	7
+PW5	chrV	Insertion (mobile)	6
+RM	chrV	Insertion (mobile)	2
+RM	chrV	Deletion (novel)	1
+RM	chrV	Deletion (mobile)	5
+Y10	chrXIII	Insertion (mobile)	9
+Y10	chrV	Deletion (mobile)	8
+Y10	chrV	Insertion (mobile)	9
+Y10	chrXIII	Deletion (mobile)	10
+Y10	chrXIII	Translocation	2
+YJM145	chrV	Deletion (mobile)	13
+YJM145	chrV	Insertion (mobile)	4
+YJM145	chrV	Deletion (novel)	1
+YJM454	chrV	Deletion (mobile)	5
+YJM454	chrV	Insertion (mobile)	5
+YJM454	chrV	Translocation	2
+YJM454	chrXIV	Deletion (mobile)	8
+YJM454	chrXIV	Inversion	3
+YJM454	chrXIV	Insertion (mobile)	3
+YJM454	chrXIV	Translocation	2
+YJM978	chrV	Insertion (mobile)	5
+YJM978	chrV	Deletion (mobile)	9
+YJM978	chrV	Deletion (novel)	1
+YJM981	chrV	Insertion (mobile)	5
+YJM981	chrV	Deletion (novel)	1
+YJM981	chrV	Deletion (mobile)	5
+YPS1009	chrV	Deletion (mobile)	11
+YPS1009	chrV	Duplication	1
+YPS1009	chrV	Insertion (mobile)	12
+YPS1009	chrV	Deletion (novel)	1
+YPS163	chrV	Deletion (mobile)	8
+YPS163	chrV	Insertion (mobile)	3
+YPS163	chrV	Duplication	1
+273614	chrX	Translocation	2
+273614	chrX	Deletion (mobile)	7
+273614	chrVI	Deletion (novel)	1
+273614	chrVI	Insertion (mobile)	2
+273614	chrVI	Deletion (mobile)	1
+CBS2888	chrVI	Deletion (novel)	1
+CBS2888	chrVI	Insertion (mobile)	4
+CBS2888	chrVI	Duplication	1
+CBS2888	chrVI	Deletion (mobile)	1
+CLIB219	chrVI	Insertion (mobile)	2
+CLIB219	chrVI	Deletion (mobile)	2
+CLIB219	chrVI	Duplication	1
+CLIB413	chrVI	Insertion (mobile)	3
+CLIB413	chrVI	Deletion (mobile)	1
+CLIB413	chrVI	Contraction	1
+I14	chrX	Translocation	2
+I14	chrVI	Insertion (mobile)	3
+I14	chrX	Insertion (mobile)	5
+I14	chrX	Deletion (mobile)	6
+I14	chrVI	Deletion (novel)	1
+I14	chrVI	Deletion (mobile)	1
+I14	chrVI	Contraction	1
+M22	chrVI	Deletion (novel)	1
+M22	chrVI	Insertion (mobile)	2
+M22	chrVI	Deletion (mobile)	1
+M22	chrVI	Contraction	1
+PW5	chrVI	Insertion (mobile)	1
+PW5	chrVI	Deletion (novel)	4
+PW5	chrVI	Deletion (mobile)	1
+PW5	chrVI	Contraction	1
+RM	chrVI	Insertion (mobile)	3
+RM	chrX	Translocation	2
+RM	chrVI	Deletion (novel)	1
+RM	chrVI	Deletion (mobile)	1
+Y10	chrX	Insertion (mobile)	9
+Y10	chrVI	Translocation	4
+Y10	chrX	Translocation	2
+Y10	chrVI	Insertion (mobile)	3
+Y10	chrVI	Deletion (mobile)	1
+Y10	chrVI	Duplication	1
+YJM145	chrX	Translocation	2
+YJM145	chrX	Insertion (mobile)	3
+YJM145	chrVI	Insertion (mobile)	2
+YJM145	chrVI	Deletion (novel)	1
+YJM145	chrVI	Deletion (mobile)	1
+YJM145	chrVI	Contraction	1
+YJM454	chrVI	Insertion (mobile)	3
+YJM454	chrVI	Deletion (mobile)	1
+YJM978	chrVI	Deletion (mobile)	2
+YJM978	chrVI	Insertion (mobile)	4
+YJM978	chrVI	Duplication	1
+YJM981	chrVI	Deletion (novel)	1
+YJM981	chrVI	Insertion (mobile)	2
+YJM981	chrVI	Deletion (mobile)	1
+YPS1009	chrVI	Deletion (novel)	2
+YPS1009	chrVI	Insertion (mobile)	5
+YPS1009	chrVI	Duplication	2
+YPS1009	chrVI	Deletion (mobile)	1
+YPS1009	chrVI	Contraction	1
+YPS163	chrVI	Insertion (mobile)	2
+YPS163	chrVI	Duplication	2
+YPS163	chrVI	Deletion (mobile)	1
+273614	chrVII	Deletion (mobile)	9
+273614	chrVII	Insertion (mobile)	7
+273614	chrVII	Duplication	1
+273614	chrVII	Insertion (novel)	1
+273614	chrVII	Inversion	1
+273614	chrVII	Deletion (novel)	1
+CBS2888	chrVII	Deletion (mobile)	14
+CBS2888	chrVII	Insertion (mobile)	15
+CBS2888	chrVII	Insertion (novel)	1
+CLIB219	chrVII	Deletion (mobile)	12
+CLIB219	chrVII	Insertion (mobile)	10
+CLIB219	chrVII	Deletion (novel)	1
+CLIB219	chrVII	Insertion (novel)	1
+CLIB413	chrVII	Deletion (novel)	1
+CLIB413	chrVII	Insertion (mobile)	2
+CLIB413	chrVII	Deletion (mobile)	8
+CLIB413	chrVII	Insertion (novel)	1
+I14	chrVII	Deletion (mobile)	9
+I14	chrVII	Insertion (mobile)	5
+I14	chrVII	Inversion	1
+I14	chrVII	Insertion (novel)	1
+I14	chrVII	Deletion (novel)	1
+M22	chrVII	Insertion (mobile)	4
+M22	chrVII	Deletion (mobile)	8
+M22	chrVII	Insertion (novel)	1
+M22	chrVII	Deletion (novel)	1
+PW5	chrVII	Insertion (mobile)	10
+PW5	chrVII	Deletion (mobile)	9
+PW5	chrVII	Contraction	1
+PW5	chrVII	Insertion (novel)	1
+RM	chrVII	Insertion (mobile)	6
+RM	chrVII	Deletion (mobile)	8
+RM	chrVII	Insertion (novel)	1
+RM	chrVII	Contraction	1
+RM	chrVII	Deletion (novel)	1
+Y10	chrVII	Deletion (mobile)	15
+Y10	chrVII	Insertion (novel)	2
+YJM145	chrVII	Deletion (novel)	1
+YJM145	chrVII	Insertion (mobile)	4
+YJM145	chrVII	Deletion (mobile)	10
+YJM145	chrVII	Duplication	1
+YJM145	chrVII	Insertion (novel)	1
+YJM145	chrVII	Contraction	1
+YJM454	chrVII	Deletion (mobile)	12
+YJM454	chrVII	Insertion (mobile)	6
+YJM454	chrVII	Duplication	27
+YJM978	chrVII	Deletion (mobile)	14
+YJM978	chrVII	Deletion (novel)	2
+YJM978	chrVII	Insertion (mobile)	5
+YJM978	chrVII	Duplication	2
+YJM981	chrVII	Deletion (mobile)	10
+YJM981	chrVII	Insertion (mobile)	5
+YJM981	chrVII	Insertion (novel)	1
+YPS1009	chrVII	Deletion (mobile)	12
+YPS1009	chrVII	Insertion (mobile)	17
+YPS1009	chrVII	Duplication	3
+YPS1009	chrVII	Deletion (novel)	1
+YPS163	chrVII	Deletion (mobile)	13
+YPS163	chrVII	Deletion (novel)	1
+YPS163	chrVII	Insertion (mobile)	3
+YPS163	chrVII	Contraction	1
+YPS163	chrVII	Insertion (novel)	1
+273614	chrVIII	Deletion (mobile)	5
+273614	chrVIII	Insertion (novel)	1
+273614	chrVIII	Insertion (mobile)	7
+273614	chrVIII	Duplication	7
+273614	chrVIII	Deletion (novel)	1
+273614	chrVIII	Contraction	1
+BY	chrVIII	Insertion (mobile)	1
+CBS2888	chrVIII	Insertion (novel)	1
+CBS2888	chrVIII	Deletion (mobile)	5
+CBS2888	chrVIII	Insertion (mobile)	6
+CBS2888	chrVIII	Contraction	1
+CBS2888	chrVIII	Duplication	2
+CLIB219	chrVIII	Deletion (mobile)	5
+CLIB219	chrVIII	Insertion (novel)	3
+CLIB219	chrVIII	Insertion (mobile)	4
+CLIB219	chrVIII	Contraction	1
+CLIB219	chrVIII	Deletion (novel)	1
+CLIB413	chrVIII	Deletion (mobile)	6
+CLIB413	chrVIII	Insertion (mobile)	5
+CLIB413	chrVIII	Duplication	9
+CLIB413	chrVIII	Contraction	1
+I14	chrVIII	Insertion (novel)	1
+I14	chrVIII	Deletion (mobile)	5
+I14	chrVIII	Insertion (mobile)	3
+I14	chrVIII	Deletion (novel)	1
+I14	chrVIII	Duplication	6
+I14	chrVIII	Contraction	1
+M22	chrVIII	Translocation	4
+M22	chrVIII	Insertion (novel)	1
+M22	chrVIII	Deletion (mobile)	5
+M22	chrVIII	Insertion (mobile)	7
+M22	chrVIII	Duplication	21
+M22	chrVIII	Contraction	1
+PW5	chrVIII	Insertion (mobile)	8
+PW5	chrVIII	Deletion (mobile)	6
+PW5	chrVIII	Contraction	1
+RM	chrVIII	Insertion (novel)	1
+RM	chrVIII	Deletion (mobile)	3
+RM	chrVIII	Insertion (mobile)	7
+RM	chrVIII	Deletion (novel)	1
+RM	chrI	Insertion (novel)	1
+RM	chrVIII	Duplication	8
+RM	chrVIII	Contraction	1
+Y10	chrVIII	Insertion (mobile)	5
+Y10	chrVIII	Deletion (mobile)	6
+Y10	chrVIII	Insertion (novel)	1
+Y10	chrVIII	Duplication	1
+Y10	chrVIII	Contraction	1
+YJM145	chrVIII	Deletion (mobile)	5
+YJM145	chrVIII	Duplication	5
+YJM145	chrVIII	Contraction	1
+YJM145	chrVIII	Insertion (mobile)	4
+YJM454	chrVIII	Insertion (novel)	1
+YJM454	chrVIII	Deletion (mobile)	6
+YJM454	chrVIII	Insertion (mobile)	5
+YJM454	chrVIII	Duplication	8
+YJM454	chrVIII	Contraction	1
+YJM978	chrVIII	Insertion (novel)	2
+YJM978	chrVIII	Deletion (mobile)	6
+YJM978	chrVIII	Insertion (mobile)	5
+YJM978	chrVIII	Contraction	1
+YJM978	chrVIII	Deletion (novel)	1
+YJM981	chrVIII	Translocation	4
+YJM981	chrVIII	Deletion (mobile)	3
+YJM981	chrVIII	Insertion (novel)	2
+YJM981	chrVIII	Insertion (mobile)	5
+YJM981	chrVIII	Duplication	4
+YJM981	chrVIII	Contraction	1
+YPS1009	chrVIII	Insertion (mobile)	8
+YPS1009	chrVIII	Deletion (mobile)	5
+YPS1009	chrVIII	Deletion (novel)	2
+YPS1009	chrVIII	Contraction	1
+YPS163	chrVIII	Deletion (mobile)	9
+YPS163	chrVIII	Insertion (novel)	1
+YPS163	chrVIII	Insertion (mobile)	6
+YPS163	chrVIII	Contraction	1
+YPS163	chrVIII	Deletion (novel)	1
+273614	chrIX	Deletion (mobile)	3
+273614	chrIX	Contraction	1
+273614	chrIX	Insertion (mobile)	5
+273614	chrIX	Inversion	1
+273614	chrIX	Duplication	1
+CBS2888	chrIX	Deletion (mobile)	4
+CBS2888	chrIX	Insertion (mobile)	5
+CBS2888	chrIX	Contraction	2
+CLIB219	chrIX	Deletion (mobile)	5
+CLIB219	chrIX	Insertion (mobile)	5
+CLIB219	chrIX	Contraction	1
+CLIB413	chrIX	Deletion (mobile)	4
+CLIB413	chrIX	Duplication	1
+CLIB413	chrIX	Contraction	1
+CLIB413	chrIX	Insertion (mobile)	1
+I14	chrIX	Insertion (mobile)	3
+I14	chrIX	Deletion (mobile)	7
+I14	chrIX	Contraction	2
+I14	chrIX	Deletion (novel)	1
+M22	chrIX	Insertion (mobile)	4
+M22	chrIX	Deletion (mobile)	5
+M22	chrIX	Deletion (novel)	1
+M22	chrIX	Contraction	1
+M22	chrIX	Duplication	1
+PW5	chrIX	Insertion (mobile)	5
+PW5	chrIX	Deletion (novel)	4
+PW5	chrIX	Duplication	2
+PW5	chrIX	Deletion (mobile)	3
+PW5	chrIX	Contraction	1
+RM	chrIX	Deletion (mobile)	5
+RM	chrIX	Deletion (novel)	1
+RM	chrIX	Insertion (mobile)	2
+RM	chrIX	Contraction	1
+Y10	chrIX	Insertion (novel)	1
+Y10	chrIX	Deletion (novel)	4
+Y10	chrIX	Contraction	2
+Y10	chrIX	Duplication	1
+YJM145	chrIX	Contraction	2
+YJM145	chrIX	Deletion (mobile)	6
+YJM145	chrIX	Duplication	2
+YJM145	chrIX	Insertion (mobile)	1
+YJM145	chrIX	Insertion (novel)	1
+YJM145	chrIX	Deletion (novel)	1
+YJM454	chrIX	Insertion (mobile)	4
+YJM454	chrIX	Deletion (mobile)	4
+YJM454	chrIX	Deletion (novel)	1
+YJM454	chrIX	Contraction	3
+YJM454	chrIX	Duplication	1
+YJM978	chrIX	Insertion (mobile)	4
+YJM978	chrIX	Deletion (mobile)	5
+YJM981	chrIX	Deletion (mobile)	3
+YJM981	chrIX	Deletion (novel)	1
+YJM981	chrIX	Duplication	1
+YJM981	chrIX	Insertion (mobile)	2
+YJM981	chrIX	Contraction	1
+YPS1009	chrIX	Insertion (mobile)	6
+YPS1009	chrIX	Deletion (novel)	2
+YPS1009	chrIX	Deletion (mobile)	5
+YPS163	chrIX	Insertion (mobile)	5
+YPS163	chrIX	Deletion (mobile)	3
+YPS163	chrIX	Contraction	1
+273614	chrX	Insertion (novel)	3
+273614	chrX	Insertion (mobile)	8
+CBS2888	chrXV	Insertion (mobile)	10
+CBS2888	chrXV	Insertion (novel)	2
+CBS2888	chrXV	Translocation	4
+CBS2888	chrXV	Deletion (novel)	1
+CBS2888	chrX	Insertion (mobile)	8
+CBS2888	chrXV	Deletion (mobile)	7
+CBS2888	chrX	Translocation	2
+CBS2888	chrX	Duplication	1
+CBS2888	chrX	Deletion (mobile)	3
+CBS2888	chrX	Contraction	2
+CLIB219	chrX	Insertion (mobile)	2
+CLIB219	chrX	Deletion (mobile)	5
+CLIB219	chrX	Insertion (novel)	3
+CLIB219	chrX	Deletion (novel)	1
+CLIB219	chrX	Duplication	1
+CLIB413	chrX	Duplication	1
+CLIB413	chrX	Insertion (mobile)	1
+CLIB413	chrX	Deletion (mobile)	2
+I14	chrX	Insertion (novel)	2
+I14	chrX	Inversion	1
+M22	chrX	Insertion (mobile)	3
+M22	chrX	Deletion (mobile)	6
+M22	chrX	Duplication	2
+M22	chrX	Insertion (novel)	1
+PW5	chrX	Duplication	2
+PW5	chrX	Insertion (mobile)	5
+PW5	chrX	Deletion (mobile)	8
+PW5	chrX	Insertion (novel)	1
+PW5	chrX	Contraction	2
+RM	chrX	Insertion (novel)	2
+RM	chrX	Insertion (mobile)	3
+RM	chrX	Deletion (mobile)	6
+RM	chrX	Duplication	1
+Y10	chrX	Deletion (mobile)	7
+Y10	chrX	Insertion (novel)	3
+Y10	chrX	Inversion	1
+Y10	chrX	Deletion (novel)	1
+Y10	chrX	Contraction	2
+Y10	chrX	Duplication	1
+YJM145	chrX	Deletion (mobile)	7
+YJM145	chrX	Insertion (novel)	3
+YJM454	chrX	Insertion (mobile)	5
+YJM454	chrX	Insertion (novel)	1
+YJM454	chrX	Deletion (mobile)	5
+YJM454	chrX	Contraction	1
+YJM978	chrX	Insertion (mobile)	4
+YJM978	chrX	Deletion (mobile)	5
+YJM978	chrX	Insertion (novel)	1
+YJM978	chrX	Duplication	1
+YJM978	chrX	Contraction	1
+YJM981	chrX	Insertion (mobile)	4
+YJM981	chrX	Deletion (mobile)	5
+YJM981	chrX	Duplication	1
+YJM981	chrX	Insertion (novel)	2
+YPS1009	chrX	Insertion (mobile)	11
+YPS1009	chrX	Deletion (mobile)	5
+YPS1009	chrX	Deletion (novel)	1
+YPS1009	chrX	Insertion (novel)	1
+YPS1009	chrX	Duplication	1
+YPS1009	chrX	Contraction	1
+YPS163	chrX	Insertion (mobile)	2
+YPS163	chrX	Deletion (mobile)	4
+YPS163	chrX	Insertion (novel)	1
+273614	chrXI	Insertion (mobile)	2
+273614	chrXI	Deletion (mobile)	4
+273614	chrXI	Insertion (novel)	2
+CBS2888	chrXI	Insertion (mobile)	5
+CBS2888	chrXI	Insertion (novel)	1
+CBS2888	chrXI	Deletion (mobile)	3
+CBS2888	chrXI	Deletion (novel)	1
+CLIB219	chrXI	Insertion (mobile)	3
+CLIB219	chrXI	Deletion (mobile)	6
+CLIB219	chrXI	Insertion (novel)	2
+CLIB413	chrXI	Insertion (mobile)	4
+CLIB413	chrXI	Deletion (mobile)	5
+CLIB413	chrXI	Insertion (novel)	2
+I14	chrXI	Duplication	1
+I14	chrXI	Insertion (mobile)	2
+I14	chrXI	Deletion (mobile)	6
+I14	chrXI	Insertion (novel)	2
+M22	chrXI	Insertion (novel)	3
+M22	chrXI	Deletion (mobile)	4
+M22	chrXI	Insertion (mobile)	2
+PW5	chrXI	Contraction	1
+PW5	chrXI	Insertion (mobile)	7
+PW5	chrXI	Deletion (mobile)	5
+PW5	chrXI	Deletion (novel)	1
+PW5	chrXI	Insertion (novel)	2
+PW5	chrXI	Duplication	1
+RM	chrXI	Deletion (mobile)	5
+RM	chrXI	Insertion (novel)	2
+RM	chrXI	Insertion (mobile)	2
+Y10	chrXI	Duplication	2
+Y10	chrXI	Insertion (mobile)	2
+Y10	chrXI	Deletion (mobile)	4
+Y10	chrXI	Insertion (novel)	1
+Y10	chrXI	Deletion (novel)	1
+Y10	chrXI	Contraction	1
+YJM145	chrXI	Insertion (mobile)	1
+YJM145	chrXI	Duplication	2
+YJM145	chrXI	Deletion (mobile)	5
+YJM145	chrXI	Insertion (novel)	1
+YJM454	chrXI	Insertion (mobile)	3
+YJM454	chrXI	Duplication	2
+YJM454	chrXI	Deletion (mobile)	6
+YJM454	chrXI	Insertion (novel)	2
+YJM978	chrXI	Deletion (mobile)	5
+YJM978	chrXI	Insertion (novel)	1
+YJM978	chrXI	Insertion (mobile)	2
+YJM981	chrXI	Deletion (mobile)	5
+YJM981	chrXI	Insertion (mobile)	2
+YJM981	chrXI	Insertion (novel)	2
+YJM981	chrXI	Duplication	1
+YPS1009	chrXI	Insertion (mobile)	11
+YPS1009	chrXI	Deletion (mobile)	5
+YPS1009	chrXI	Insertion (novel)	1
+YPS1009	chrXI	Duplication	1
+YPS163	chrXI	Insertion (mobile)	5
+YPS163	chrXI	Deletion (mobile)	7
+YPS163	chrXI	Insertion (novel)	1
+YPS163	chrXI	Contraction	1
+273614	chrXII	Deletion (mobile)	9
+273614	chrXII	Duplication	1
+273614	chrXII	Insertion (novel)	1
+BY	chrXII	Deletion (mobile)	1
+BY	chrXII	Insertion (mobile)	1
+BY	chrXII	Insertion (novel)	1
+CBS2888	chrXII	Duplication	1
+CBS2888	chrXII	Insertion (novel)	2
+CBS2888	chrXII	Deletion (mobile)	7
+CBS2888	chrXII	Insertion (mobile)	11
+CLIB219	chrXII	Insertion (novel)	3
+CLIB219	chrXII	Deletion (novel)	1
+CLIB219	chrXII	Duplication	2
+CLIB219	chrXII	Insertion (mobile)	5
+CLIB219	chrXII	Deletion (mobile)	8
+CLIB413	chrXII	Duplication	3
+CLIB413	chrXII	Deletion (mobile)	6
+CLIB413	chrXII	Insertion (mobile)	9
+I14	chrXII	Deletion (mobile)	7
+I14	chrXII	Insertion (mobile)	7
+I14	chrXII	Insertion (novel)	1
+M22	chrXII	Insertion (novel)	4
+M22	chrXII	Deletion (mobile)	7
+M22	chrXII	Inversion	1
+PW5	chrXII	Insertion (novel)	3
+PW5	chrXII	Deletion (mobile)	9
+PW5	chrXII	Insertion (mobile)	6
+RM	chrXII	Duplication	2
+RM	chrXII	Deletion (mobile)	7
+RM	chrXII	Insertion (mobile)	8
+Y10	chrXII	Insertion (mobile)	11
+Y10	chrXII	Deletion (novel)	1
+Y10	chrXII	Insertion (novel)	2
+Y10	chrXII	Deletion (mobile)	10
+YJM145	chrXII	Deletion (mobile)	8
+YJM145	chrXII	Duplication	2
+YJM145	chrXII	Insertion (mobile)	9
+YJM145	chrXII	Deletion (novel)	1
+YJM145	chrXII	Insertion (novel)	1
+YJM454	chrXII	Deletion (mobile)	8
+YJM454	chrXII	Insertion (novel)	3
+YJM454	chrXII	Duplication	1
+YJM454	chrXII	Insertion (mobile)	11
+YJM978	chrXII	Duplication	1
+YJM978	chrXII	Insertion (novel)	2
+YJM978	chrXII	Deletion (mobile)	8
+YJM978	chrXII	Insertion (mobile)	6
+YJM981	chrXII	Insertion (mobile)	5
+YJM981	chrXII	Insertion (novel)	2
+YJM981	chrXII	Inversion	1
+YJM981	chrXII	Deletion (mobile)	7
+YPS1009	chrXII	Insertion (novel)	2
+YPS1009	chrXII	Deletion (mobile)	8
+YPS1009	chrXII	Insertion (mobile)	13
+YPS163	chrXII	Insertion (novel)	3
+YPS163	chrXII	Duplication	1
+YPS163	chrXII	Deletion (mobile)	8
+YPS163	chrXII	Insertion (mobile)	3
+273614	chrXIII	Translocation	2
+273614	chrXIII	Insertion (mobile)	9
+273614	chrXIII	Deletion (mobile)	7
+273614	chrXIII	Insertion (novel)	2
+273614	chrXIII	Deletion (novel)	1
+BY	chrXIII	Insertion (mobile)	1
+CBS2888	chrXIII	Deletion (mobile)	7
+CBS2888	chrXIII	Insertion (mobile)	7
+CBS2888	chrXIII	Insertion (novel)	3
+CBS2888	chrXIII	Deletion (novel)	3
+CBS2888	chrXIII	Duplication	1
+CLIB219	chrXIII	Inversion	1
+CLIB219	chrXIII	Contraction	1
+CLIB219	chrXIII	Insertion (mobile)	7
+CLIB219	chrXIII	Deletion (mobile)	9
+CLIB219	chrXIII	Insertion (novel)	3
+CLIB413	chrXIII	Insertion (mobile)	9
+CLIB413	chrXIII	Deletion (mobile)	7
+CLIB413	chrXIII	Insertion (novel)	1
+I14	chrXIII	Deletion (mobile)	6
+I14	chrXIII	Insertion (mobile)	5
+I14	chrXIII	Deletion (novel)	1
+I14	chrXIII	Insertion (novel)	1
+I14	chrXIII	Duplication	2
+M22	chrXIII	Deletion (mobile)	7
+M22	chrXIII	Insertion (mobile)	8
+M22	chrXIII	Insertion (novel)	2
+M22	chrXIII	Duplication	1
+PW5	chrXIII	Insertion (mobile)	6
+PW5	chrXIII	Deletion (mobile)	7
+PW5	chrXIII	Insertion (novel)	2
+PW5	chrXIII	Duplication	2
+RM	chrXIII	Deletion (mobile)	7
+RM	chrXIII	Insertion (mobile)	8
+RM	chrXIII	Insertion (novel)	1
+RM	chrXIII	Duplication	1
+Y10	chrXIII	Insertion (novel)	3
+Y10	chrXIII	Deletion (novel)	2
+Y10	chrXIII	Duplication	2
+YJM145	chrXIII	Deletion (mobile)	7
+YJM145	chrXIII	Insertion (mobile)	7
+YJM145	chrXIII	Duplication	2
+YJM145	chrXIII	Insertion (novel)	2
+YJM454	chrXIII	Deletion (mobile)	5
+YJM454	chrXIII	Insertion (mobile)	5
+YJM454	chrXIII	Duplication	1
+YJM454	chrXIII	Insertion (novel)	2
+YJM978	chrXIII	Insertion (mobile)	4
+YJM978	chrXIII	Deletion (mobile)	7
+YJM978	chrXIII	Insertion (novel)	4
+YJM978	chrXIII	Duplication	4
+YJM981	chrXIII	Deletion (mobile)	7
+YJM981	chrXIII	Insertion (mobile)	7
+YJM981	chrXIII	Insertion (novel)	1
+YJM981	chrXIII	Duplication	1
+YPS1009	chrXIII	Contraction	2
+YPS1009	chrXIII	Duplication	2
+YPS1009	chrXIII	Insertion (mobile)	10
+YPS1009	chrXIII	Deletion (mobile)	6
+YPS1009	chrXIII	Insertion (novel)	1
+YPS1009	chrXIII	Deletion (novel)	1
+YPS163	chrXIII	Deletion (mobile)	8
+YPS163	chrXIII	Insertion (mobile)	6
+YPS163	chrXIII	Insertion (novel)	1
+YPS163	chrXIII	Deletion (novel)	1
+YPS163	chrXIII	Duplication	3
+273614	chrXIV	Insertion (mobile)	4
+273614	chrXIV	Deletion (mobile)	5
+273614	chrXIV	Inversion	1
+273614	chrXIV	Insertion (novel)	1
+CBS2888	chrXIV	Insertion (mobile)	4
+CBS2888	chrXIV	Deletion (mobile)	4
+CBS2888	chrXIV	Inversion	1
+CLIB219	chrXIV	Insertion (mobile)	1
+CLIB219	chrXIV	Deletion (mobile)	4
+CLIB219	chrXIV	Inversion	1
+CLIB413	chrXIV	Deletion (mobile)	4
+CLIB413	chrXIV	Insertion (mobile)	2
+CLIB413	chrXIV	Duplication	1
+I14	chrXIV	Deletion (mobile)	4
+I14	chrXIV	Inversion	1
+I14	chrXIV	Insertion (mobile)	1
+I14	chrXIV	Deletion (novel)	1
+M22	chrXIV	Insertion (mobile)	1
+M22	chrXIV	Deletion (mobile)	4
+M22	chrXIV	Deletion (novel)	1
+M22	chrXIV	Inversion	1
+PW5	chrXIV	Deletion (mobile)	5
+PW5	chrXIV	Insertion (novel)	1
+PW5	chrXIV	Insertion (mobile)	4
+PW5	chrXIV	Inversion	1
+PW5	chrXIV	Deletion (novel)	1
+RM	chrXIV	Insertion (mobile)	4
+RM	chrXIV	Deletion (mobile)	4
+RM	chrXIV	Insertion (novel)	1
+RM	chrXIV	Deletion (novel)	1
+RM	chrXIV	Inversion	1
+Y10	chrXIV	Deletion (mobile)	6
+Y10	chrXIV	Insertion (mobile)	6
+Y10	chrXIV	Inversion	1
+Y10	chrXIV	Duplication	1
+YJM145	chrXIV	Deletion (mobile)	6
+YJM145	chrXIV	Insertion (mobile)	5
+YJM145	chrXIV	Inversion	1
+YJM454	chrV	Inversion	1
+YJM978	chrXIV	Deletion (mobile)	6
+YJM978	chrXIV	Insertion (mobile)	1
+YJM978	chrXIV	Inversion	1
+YJM981	chrXIV	Insertion (mobile)	1
+YJM981	chrXIV	Deletion (mobile)	4
+YJM981	chrXIV	Deletion (novel)	1
+YJM981	chrXIV	Inversion	1
+YPS1009	chrXIV	Insertion (mobile)	6
+YPS1009	chrXIV	Deletion (mobile)	6
+YPS1009	chrXIV	Insertion (novel)	1
+YPS1009	chrXIV	Inversion	1
+YPS163	chrXIV	Insertion (mobile)	3
+YPS163	chrXIV	Deletion (mobile)	3
+YPS163	chrXIV	Duplication	1
+YPS163	chrXIV	Inversion	1
+273614	chrXV	Duplication	1
+273614	chrXV	Deletion (mobile)	6
+273614	chrXV	Insertion (mobile)	5
+273614	chrXV	Deletion (novel)	1
+CLIB219	chrXV	Insertion (mobile)	6
+CLIB219	chrXV	Insertion (novel)	2
+CLIB219	chrXV	Duplication	1
+CLIB219	chrXV	Deletion (mobile)	7
+CLIB413	chrXV	Duplication	1
+CLIB413	chrXV	Deletion (mobile)	7
+CLIB413	chrXV	Insertion (mobile)	5
+CLIB413	chrXV	Insertion (novel)	1
+I14	chrXV	Insertion (mobile)	4
+I14	chrXV	Duplication	2
+I14	chrXV	Deletion (mobile)	6
+I14	chrXV	Insertion (novel)	1
+I14	chrXV	Deletion (novel)	1
+M22	chrXV	Insertion (mobile)	4
+M22	chrXV	Deletion (mobile)	6
+M22	chrXV	Insertion (novel)	1
+M22	chrXV	Duplication	1
+PW5	chrXV	Deletion (mobile)	7
+PW5	chrXV	Duplication	1
+PW5	chrXV	Insertion (mobile)	5
+PW5	chrXV	Insertion (novel)	2
+PW5	chrXV	Deletion (novel)	2
+RM	chrXV	Duplication	2
+RM	chrXV	Deletion (mobile)	7
+RM	chrXV	Insertion (novel)	1
+RM	chrXV	Insertion (mobile)	4
+Y10	chrXV	Deletion (mobile)	7
+Y10	chrXV	Insertion (mobile)	5
+Y10	chrXV	Contraction	1
+Y10	chrXV	Insertion (novel)	1
+Y10	chrXV	Deletion (novel)	1
+Y10	chrXV	Duplication	1
+YJM145	chrXV	Duplication	2
+YJM145	chrXV	Deletion (mobile)	8
+YJM145	chrXV	Insertion (mobile)	6
+YJM145	chrXV	Insertion (novel)	1
+YJM454	chrXV	Duplication	4
+YJM454	chrXV	Deletion (mobile)	6
+YJM454	chrXV	Insertion (novel)	1
+YJM454	chrXV	Insertion (mobile)	3
+YJM978	chrXV	Insertion (mobile)	5
+YJM978	chrXV	Duplication	2
+YJM978	chrXV	Deletion (mobile)	7
+YJM978	chrXV	Insertion (novel)	1
+YJM981	chrXV	Duplication	1
+YJM981	chrXV	Insertion (mobile)	4
+YJM981	chrXV	Contraction	1
+YJM981	chrXV	Deletion (mobile)	6
+YJM981	chrXV	Insertion (novel)	1
+YPS1009	chrXV	Insertion (mobile)	11
+YPS1009	chrXV	Deletion (mobile)	8
+YPS1009	chrXV	Contraction	2
+YPS1009	chrXV	Insertion (novel)	1
+YPS1009	chrXV	Deletion (novel)	2
+YPS163	chrXV	Insertion (mobile)	4
+YPS163	chrXV	Duplication	2
+YPS163	chrXV	Deletion (mobile)	7
+YPS163	chrXV	Insertion (novel)	1
+YPS163	chrXVI	Translocation	2
+273614	chrXVI	Insertion (mobile)	6
+273614	chrXVI	Deletion (mobile)	7
+273614	chrXVI	Duplication	1
+CBS2888	chrXVI	Insertion (mobile)	5
+CBS2888	chrXVI	Deletion (mobile)	7
+CBS2888	chrXVI	Duplication	1
+CLIB219	chrXVI	Duplication	2
+CLIB219	chrXVI	Deletion (mobile)	7
+CLIB219	chrXVI	Insertion (mobile)	3
+CLIB219	chrXVI	Contraction	1
+CLIB413	chrXVI	Deletion (mobile)	6
+CLIB413	chrXVI	Insertion (mobile)	6
+CLIB413	chrXVI	Duplication	1
+CLIB413	chrXVI	Deletion (novel)	1
+I14	chrXVI	Deletion (mobile)	6
+M22	chrXVI	Deletion (mobile)	4
+M22	chrXVI	Deletion (novel)	1
+PW5	chrXVI	Insertion (mobile)	6
+PW5	chrXVI	Deletion (mobile)	7
+PW5	chrXVI	Insertion (novel)	1
+PW5	chrXVI	Deletion (novel)	2
+RM	chrXVI	Deletion (mobile)	6
+RM	chrXVI	Insertion (mobile)	1
+RM	chrXVI	Deletion (novel)	1
+Y10	chrXVI	Insertion (mobile)	6
+Y10	chrXVI	Deletion (novel)	1
+Y10	chrXVI	Deletion (mobile)	7
+Y10	chrXVI	Duplication	1
+YJM145	chrXVI	Deletion (novel)	1
+YJM145	chrXVI	Deletion (mobile)	7
+YJM454	chrXVI	Deletion (mobile)	7
+YJM454	chrXVI	Insertion (mobile)	2
+YJM454	chrXVI	Duplication	1
+YJM978	chrXVI	Deletion (mobile)	7
+YJM978	chrXVI	Duplication	1
+YJM981	chrXVI	Deletion (mobile)	4
+YJM981	chrXVI	Insertion (mobile)	1
+YJM981	chrXVI	Deletion (novel)	1
+YPS1009	chrXVI	Insertion (mobile)	7
+YPS1009	chrXVI	Deletion (mobile)	7
+YPS1009	chrXVI	Deletion (novel)	1
+YPS1009	chrXVI	Duplication	1
+YPS163	chrXVI	Deletion (mobile)	7
+YPS163	chrXVI	Insertion (mobile)	1
+YPS163	chrXVI	Duplication	1

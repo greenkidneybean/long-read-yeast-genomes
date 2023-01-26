@@ -8,7 +8,7 @@ library(ggthemes)
 
 minLen <- 10000
 
-coordsfiles <- list.files(path='MUMandCo_output', pattern='*.coords', full.names=TRUE)
+coordsfiles <- list.files(path='reference_alignment/', pattern='*.coords', full.names=TRUE)
 
 o <- foreach(f=coordsfiles, .combine='rbind') %do% {
     fread(f, skip='[S1]')
@@ -89,6 +89,14 @@ boxes[chr=='mitochondrion', chr := 'm']
 dat2[, spanA := end_query - start_query]
 dat2[, spanB := end_ref - start_ref]
 
+strainLvls <- c(
+'BY','273614','CBS2888','CLIB219','CLIB413','I14','M22','PW5',
+'RM','Y10','YJM145','YJM454','YJM978','YJM981','YPS1009',
+'YPS163'
+)
+
+dat2[, strain := factor(strain, levels=strainLvls)]
+
 plot_all <- function() {
     g <- ggplot(data=dat2) + 
         geom_segment(aes(x=startB, xend=stopB, y=start_query, yend=end_query, color=chrA)) +
@@ -105,6 +113,7 @@ plot_all <- function() {
 
 g.all <- plot_all()
 ggsave(g.all, file='reference_alignment/all-aligned-S288C.png', width=40, height=40, units='cm')
+ggsave(g.all, file='reference_alignment/all-aligned-S288C.svg', width=40, height=40, units='cm')
 
 quit()
 

@@ -46,11 +46,21 @@ Trim these out by running [fix_coords.sh](src/fix_coords.sh)
 src/fix_coords.sh
 ```
 
-
-### Generate alignment plot
+### Generate alignment figure from `.coords` output
 ```bash
 module load R/3.6.3
 Rscript src/plot_MUMandCo_alignment.R
+```
+
+![](/reference_alignment/all-aligned-S288C.png)
+
+
+### Generate SV count figure  from `.SVs.tsv` output
+Generates the text output [`SV_counts.tsv`](/reference_alignment/SV_counts.tsv) and the figure
+below (as `.png` and .svg`)
+```bash
+module load R/3.6.3
+Rscript src/plot_SV_counts.R
 ```
 
 ![](/reference_alignment/all-aligned-S288C.png)
