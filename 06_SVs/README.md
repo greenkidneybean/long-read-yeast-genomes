@@ -1,5 +1,6 @@
 # Structural Variant Analysis for 16 Yeast Isolates
 Note: ensure 16 reference assembly `fasta` files are in the [`assemblies/`](assemblies/) directory.
+They are excluded from the repo for file size reduction.
 
 ```
 273614.fasta
