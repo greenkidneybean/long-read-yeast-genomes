@@ -1,5 +1,5 @@
 # Structural Variant Analysis for 16 Yeast Isolates
-Note: ensure 16 reference assembly `fasta` files are in the [`assemblies/`](/assemblies/) directory.
+Note: ensure 16 reference assembly `fasta` files are in the [`assemblies/`](assemblies/) directory.
 
 ```
 273614.fasta
@@ -31,10 +31,10 @@ src/download_reference.sh
 
 ## Aligning long-read assemblies to reference genome
 The script [`run_MUMandCo.sh`](src/run_MUMandCo.sh) generates a genome-genome alignment for one
-of the sixteen assemblies in the [`assemblies/`](/assemblies/) directory. Run all of them as a
+of the sixteen assemblies in the [`assemblies/`](assemblies/) directory. Run all of them as a
 job array with `--array=0-15` to submit 16 jobs at once. Each individual job in the array will
-check the [`assemblies/`](/assemblies/) directory and then generate an alignment for that Nth
-assembly. Alignments are saved to the [`reference_alignment/`](/reference_alignment/) directory.
+check the [`assemblies/`](assemblies/) directory and then generate an alignment for that Nth
+assembly. Alignments are saved to the [`reference_alignment/`](reference_alignment/) directory.
 ```bash
 sbatch --array=0-15 src/run_MUMandCo.sh
 ```
@@ -56,7 +56,7 @@ Rscript src/plot_MUMandCo_alignment.R
 
 
 ### Generate SV count figure  from `.SVs.tsv` output
-Generates the text output [`SV_counts.tsv`](/reference_alignment/SV_counts.tsv) and the figure
+Generates the text output [`SV_counts.tsv`](reference_alignment/SV_counts.tsv) and the figure
 below (as `.png` and .svg`)
 ```bash
 module load R/3.6.3
