@@ -46,15 +46,21 @@ strainLvls <- c(
 'RM','Y10','YJM145','YJM454','YJM978','YJM981','YPS1009',
 'YPS163'
 )
+
 dat <- merge(o, ids)
 setnames(dat, 'chr', 'ref_chr')
 dat[, accession := NULL]
 dat[, strain := tstrsplit(query_chr, split='_')[1]]
 assemblySizes <- copy(unique(dat[,c('query_chr_len','query_chr','strain')]))
-setcolorder(assemblySizes, c('strain', 'query_chr', 'query_chr_len'))
-setkey(
+assemblySizes[, strain := factor(strain, levels=strainLvls)]
+assemblySizes[, chr := tstrsplit(query_chr, split='_')[2]]
+assemblySizes[, query_chr := NULL]
+assemblySizes[, chr := factor(chr, levels=chrLvls)]
+setnames(assemblySizes, 'query_chr_len', 'chr_length')
+setcolorder(assemblySizes, c('strain', 'chr', 'chr_length'))
+setkey(assemblySizes, strain, chr)
 
-
+fwrite(assemblySizes, file='assembly_lengths.tsv', quote=F, row.name=F, col.names=T, sep='\t')
 
 
 ## OK

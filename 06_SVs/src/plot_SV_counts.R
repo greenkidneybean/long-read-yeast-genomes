@@ -25,7 +25,11 @@ dat[, ref_chr := NULL]
 dat[, c('strain', 'query_chr') := tstrsplit(query_chr, split='_')]
 setnames(dat, 'chr', 'ref_chr')
 
-## OK
+dat2 <- copy(dat)
+dat2[, bin := cut(
+
+# get CHR lengths
+
 
 
 SVs <- dat[, .N, by=list(strain, query_chr, SV_type)]
