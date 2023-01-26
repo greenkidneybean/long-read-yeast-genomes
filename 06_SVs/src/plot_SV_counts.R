@@ -94,9 +94,9 @@ g.bins <- ggplot(o2[binSize==20000 & minSVsize==500], aes(x=bin, y=N)) + geom_po
          y='Structural Variants (\u2265 500 bp) within 20 kilobase bin')
 
 ggsave(g.bins, file='reference_alignment/SV_bins.png', width=15, height=40, units='cm')
-ggsave(g.bins, file='reference_alignment/SV_bins.svg', width=15, height=40, units='cm')
+ggsave(g.bins, file='reference_alignment/SV_bins.pdf', width=15, height=40, units='cm', dpi=300)
 
-SVs <- dat[, .N, by=list(strain, query_chr, SV_type)]
+SVs <- dat[size >= 500, .N, by=list(strain, query_chr, SV_type)]
 
 
 SVs[, query_chr := factor(query_chr, levels=chrLvls)]
@@ -114,14 +114,72 @@ SVs[SV_type == 'transloc', SV_type := 'Translocation']
 
 SVs[, SV_type := factor(SV_type, levels=SVlvls)]
 
-fwrite(SVs, file='reference_alignment/SV_counts.tsv', quote=F, row.names=F, col.names=T, sep='\t')
+fwrite(SVs, 
+    file='reference_alignment/chr-specific-SV-counts-500bp-min.tsv',
+    quote=F, row.names=F, col.names=T, sep='\t')
+
+
 
 g <- ggplot(data=SVs, aes(x=query_chr, y=N, fill=SV_type)) +
     geom_bar(stat='identity') +
     facet_grid(strain~.) +
-    labs(x='Assembled Chromosome', y='Count', fill='Structural Variant') +
+    labs(x='Assembled Chromosome', y='Structural Variants (\u2265 500 bp)', fill='Structural Variant') +
     theme_few(12) +
     theme(legend.position = 'bottom')
 
 ggsave(g, file='reference_alignment/SV_counts.png', width=40, height=40, units='cm')
-ggsave(g, file='reference_alignment/SV_counts.svg', width=40, height=40, units='cm')
+ggsave(g, file='reference_alignment/SV_counts.pdf', width=40, height=40, units='cm', dpi=300)
+
+
+
+
+## GENOME-WIDE SV COUNT FIGURES
+genomeWide <- copy(SVs)
+genomeWide <- genomeWide[, list('N'=sum(N)), by=list(strain, SV_type)]
+
+
+# get all pairwise combos to fill in 0s which get dropped otherwise
+allCombos <- CJ('strain'=strainLvls, 'SV_type'=SVlvls)
+setkey(allCombos, strain, SV_type)
+setkey(genomeWide, strain, SV_type)
+allGenomeWideCounts <- merge(genomeWide, allCombos, all=TRUE)
+allGenomeWideCounts[is.na(N), N := 0]
+
+
+# save table
+fwrite(allGenomeWideCounts, 
+    file='reference_alignment/genome-wide-SV-counts-500bp-min.tsv',
+    quote=F, row.names=F, col.names=T, sep='\t')
+
+
+# re-factor
+allGenomeWideCounts[, strain := factor(strain, levels=strainLvls)]
+allGenomeWideCounts[, SV_type := factor(SV_type, levels=SVlvls)]
+
+
+# group by SV type
+g.genomewide1 <- ggplot(data=allGenomeWideCounts) +
+    geom_bar(stat='identity', width = 0.8, position = position_dodge(width = 1), aes(x='1', y=N, fill=strain)) +
+    labs(y='Structural Variants (\u2265 500 bp), Genome-Wide', fill='Isolate') +
+    theme_few(12) +
+    facet_grid(.~SV_type, switch='x') +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+    theme(axis.title.x=element_blank()) +
+    scale_x_discrete(breaks=NULL, labels=NULL)
+
+ggsave(g.genomewide1, file='reference_alignment/SV_counts_genomewide1.png', width=40, height=15, units='cm')
+ggsave(g.genomewide1, file='reference_alignment/SV_counts_genomewide1.pdf', width=40, height=15, units='cm', dpi=300)
+
+
+# group by strain
+g.genomewide2 <- ggplot(data=allGenomeWideCounts) +
+    geom_bar(stat='identity', width = 0.8, position = position_dodge(width = 1), aes(x='1', y=N, fill=SV_type)) +
+    labs(y='Structural Variants (\u2265 500 bp), Genome-Wide', fill='Structural Variant') +
+    theme_few(12) +
+    facet_grid(.~strain, switch='x') +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+    theme(axis.title.x=element_blank()) +
+    scale_x_discrete(breaks=NULL, labels=NULL)
+
+ggsave(g.genomewide2, file='reference_alignment/SV_counts_genomewide2.png', width=40, height=15, units='cm')
+ggsave(g.genomewide2, file='reference_alignment/SV_counts_genomewide2.pdf', width=40, height=15, units='cm', dpi=300)
