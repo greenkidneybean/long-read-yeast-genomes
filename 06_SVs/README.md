@@ -63,4 +63,4 @@ module load R/3.6.3
 Rscript src/plot_SV_counts.R
 ```
 
-![](reference_alignment/all-aligned-S288C.png)
+![](reference_alignment/SV_counts.png)
