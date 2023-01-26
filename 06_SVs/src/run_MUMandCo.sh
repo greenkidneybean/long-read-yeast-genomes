@@ -22,12 +22,15 @@ N=${SLURM_ARRAY_TASK_ID}
 
 TMPDIR=/lscratch/${SLURM_JOB_ID}
 cd ${TMPDIR}
-git clone https://github.com/SAMtoBAM/MUMandCo.git && cd MUMandCo
+git clone https://github.com/SAMtoBAM/MUMandCo.git 
+git checkout e5bb231 && cd MUMandCo
 
 ln -s ${ref} S288C.fasta
 assembly=${assemblies[$N]}
 query=$(basename ${assembly%.fasta})
 ln -s ${assembly} ${query}.fasta
+
+
 
 bash mumandco_v3.8.sh \
     -r ${ref} \
