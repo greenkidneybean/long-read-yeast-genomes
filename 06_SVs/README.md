@@ -1,5 +1,6 @@
 # Structural Variant Analysis for 16 Yeast Isolates
 Note: ensure 16 reference assembly `fasta` files are in the [`assemblies/`](assemblies/) directory.
+
 ```
 273614.fasta
 BY.fasta
@@ -36,18 +37,16 @@ sed -r 's/chromosome=/chr/g' | \
 sed -r 's/locat.*$/mitochondrion/g' | \
 sed 's/]$//g' > chromosome_ids.txt
 ```
----
 
 
-### Generate plot with [`plot_reference_alignments.R`](src/plot_reference_alignments.R)
+### Generate alignment plot
 ```bash
 module load R/3.6.3
-Rscript src/plot_reference_alignments.R
+Rscript src/plot_MUMandCo_alignments.R
 ```
 
-![](/06_SVs/reference_alignment/all.png)
+![](/06_SVs/reference_alignment/all-aligned-S288C.png)
 
----
 
 ```
 ## To align long-read genome assemblies to each other
@@ -57,6 +56,5 @@ pairwise combinations of `fasta` within the [`assemblies`](assemblies) directory
 to itself). Alignments are done reciprocally (A to B and B to A) for `N*(N-1)` total alignments, 
 output to the [`pairwise_alignments`](pairwise_alignments) directory.
 
----
 
 

@@ -104,7 +104,7 @@ plot_all <- function() {
 }
 
 g.all <- plot_all()
-ggsave(g.all, file='reference_alignment/MUMandCo-all.png', width=40, height=40, units='cm')
+ggsave(g.all, file='reference_alignment/all-aligned-S288C.png', width=40, height=40, units='cm')
 
 quit()
 
