@@ -1,0 +1,129 @@
+strain	SV_type	N
+273614	Contraction	1
+273614	Deletion (mobile)	55
+273614	Deletion (novel)	1
+273614	Duplication	6
+273614	Insertion (mobile)	40
+273614	Insertion (novel)	1
+273614	Inversion	3
+273614	Translocation	6
+BY	Contraction	0
+BY	Deletion (mobile)	2
+BY	Deletion (novel)	0
+BY	Duplication	0
+BY	Insertion (mobile)	4
+BY	Insertion (novel)	0
+BY	Inversion	0
+BY	Translocation	0
+CBS2888	Contraction	1
+CBS2888	Deletion (mobile)	51
+CBS2888	Deletion (novel)	0
+CBS2888	Duplication	0
+CBS2888	Insertion (mobile)	53
+CBS2888	Insertion (novel)	0
+CBS2888	Inversion	1
+CBS2888	Translocation	6
+CLIB219	Contraction	1
+CLIB219	Deletion (mobile)	52
+CLIB219	Deletion (novel)	1
+CLIB219	Duplication	0
+CLIB219	Insertion (mobile)	18
+CLIB219	Insertion (novel)	0
+CLIB219	Inversion	3
+CLIB219	Translocation	0
+CLIB413	Contraction	1
+CLIB413	Deletion (mobile)	50
+CLIB413	Deletion (novel)	0
+CLIB413	Duplication	10
+CLIB413	Insertion (mobile)	35
+CLIB413	Insertion (novel)	0
+CLIB413	Inversion	0
+CLIB413	Translocation	4
+I14	Contraction	1
+I14	Deletion (mobile)	54
+I14	Deletion (novel)	1
+I14	Duplication	7
+I14	Insertion (mobile)	28
+I14	Insertion (novel)	2
+I14	Inversion	3
+I14	Translocation	2
+M22	Contraction	1
+M22	Deletion (mobile)	50
+M22	Deletion (novel)	0
+M22	Duplication	21
+M22	Insertion (mobile)	21
+M22	Insertion (novel)	2
+M22	Inversion	2
+M22	Translocation	8
+PW5	Contraction	1
+PW5	Deletion (mobile)	59
+PW5	Deletion (novel)	3
+PW5	Duplication	2
+PW5	Insertion (mobile)	26
+PW5	Insertion (novel)	3
+PW5	Inversion	2
+PW5	Translocation	0
+RM	Contraction	2
+RM	Deletion (mobile)	53
+RM	Deletion (novel)	2
+RM	Duplication	9
+RM	Insertion (mobile)	24
+RM	Insertion (novel)	3
+RM	Inversion	2
+RM	Translocation	4
+Y10	Contraction	2
+Y10	Deletion (mobile)	60
+Y10	Deletion (novel)	2
+Y10	Duplication	2
+Y10	Insertion (mobile)	53
+Y10	Insertion (novel)	3
+Y10	Inversion	2
+Y10	Translocation	14
+YJM145	Contraction	1
+YJM145	Deletion (mobile)	56
+YJM145	Deletion (novel)	0
+YJM145	Duplication	9
+YJM145	Insertion (mobile)	31
+YJM145	Insertion (novel)	2
+YJM145	Inversion	2
+YJM145	Translocation	2
+YJM454	Contraction	1
+YJM454	Deletion (mobile)	56
+YJM454	Deletion (novel)	0
+YJM454	Duplication	37
+YJM454	Insertion (mobile)	35
+YJM454	Insertion (novel)	1
+YJM454	Inversion	4
+YJM454	Translocation	4
+YJM978	Contraction	1
+YJM978	Deletion (mobile)	56
+YJM978	Deletion (novel)	1
+YJM978	Duplication	2
+YJM978	Insertion (mobile)	30
+YJM978	Insertion (novel)	1
+YJM978	Inversion	2
+YJM978	Translocation	0
+YJM981	Contraction	1
+YJM981	Deletion (mobile)	48
+YJM981	Deletion (novel)	2
+YJM981	Duplication	5
+YJM981	Insertion (mobile)	20
+YJM981	Insertion (novel)	0
+YJM981	Inversion	2
+YJM981	Translocation	8
+YPS1009	Contraction	1
+YPS1009	Deletion (mobile)	55
+YPS1009	Deletion (novel)	3
+YPS1009	Duplication	0
+YPS1009	Insertion (mobile)	42
+YPS1009	Insertion (novel)	1
+YPS1009	Inversion	2
+YPS1009	Translocation	0
+YPS163	Contraction	2
+YPS163	Deletion (mobile)	54
+YPS163	Deletion (novel)	2
+YPS163	Duplication	2
+YPS163	Insertion (mobile)	31
+YPS163	Insertion (novel)	0
+YPS163	Inversion	3
+YPS163	Translocation	2
