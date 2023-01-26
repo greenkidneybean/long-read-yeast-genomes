@@ -1,5 +1,9 @@
 #!/usr/bin/env Rscript
 
+# NOTE: This was originally used to plot the output from minimap2.
+# plot_MUMandCo_ref_alignment.R uses the MUMandCo / MUMMER alignment instead,
+# and is more up-to-date.
+
 library(data.table)
 library(optparse)
 library(ggthemes)
