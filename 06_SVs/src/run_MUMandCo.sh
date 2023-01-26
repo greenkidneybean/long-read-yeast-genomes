@@ -37,7 +37,7 @@ bash mumandco_v3.8.sh \
     -t 4 \
     -b
 
-mv ${query}.SVs_all.withfragment.tsv ${OUTDIR}/${query}.SVs.tsv
+mv ${query}.SVs_all.tsv ${OUTDIR}/${query}.SVs.tsv
 mv ${query}_alignments/${query}_ref.delta_filter.coords ${OUTDIR}/${query}.coords
 
 cd
