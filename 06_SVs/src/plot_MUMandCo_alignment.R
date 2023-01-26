@@ -121,6 +121,7 @@ plot_all <- function() {
 g.all <- plot_all()
 ggsave(g.all, file='reference_alignment/all-aligned-S288C.png', width=40, height=40, units='cm')
 ggsave(g.all, file='reference_alignment/all-aligned-S288C.svg', width=40, height=40, units='cm')
+ggsave(g.all, file='reference_alignment/all-aligned-S288C.pdf', width=40, height=40, units='cm', dpi=300)
 
 quit()
 
