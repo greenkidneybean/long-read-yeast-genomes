@@ -56,13 +56,19 @@ Rscript src/plot_MUMandCo_alignment.R
 ![](reference_alignment/all-aligned-S288C.png)
 
 
-### Generate SV count figure  from `.SVs.tsv` output
-Generates the text output [`SV_counts.tsv`](reference_alignment/SV_counts.tsv) and the figure
-below (as `.png` and .svg`)
+## Generate SV count figures
+Executing the command
 ```bash
 module load R/3.6.3
 Rscript src/plot_SV_counts.R
 ```
 
-![](reference_alignment/SV_counts.png)
-![](reference_alignment/SV_bins.png)
+Generates the text outputs :
+* [`chr-specific-SV-counts-500bp-min.tsv`](reference_alignment/chr-specific-SV-counts-500bp-min.tsv)
+* [`genome-wide-SV-counts-500bp-min.tsv`](reference_alignment/genome-wide-SV-counts-500bp-min.tsv)
+
+And corresponding figure outputs:
+* [`SV_counts.png`](reference_alignment/SV_counts.png) (or [pdf](reference_alignment/SV_counts.pdf))
+* [`SV_bins.png`](reference_alignment/SV_bins.png) (or [pdf](reference_alignment/SV_bins.pdf))
+* [`SV_counts_genomewide1.png`](reference_alignment/SV_counts_genomewide1.png) (or [pdf](reference_alignment/SV_counts_genomewide1.pdf))
+* [`SV_counts_genomewide2.png`](reference_alignment/SV_counts_genomewide2.png) (or [pdf](reference_alignment/SV_counts_genomewide2.pdf))
