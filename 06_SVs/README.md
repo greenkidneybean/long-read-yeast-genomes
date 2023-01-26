@@ -52,7 +52,7 @@ module load R/3.6.3
 Rscript src/plot_MUMandCo_alignment.R
 ```
 
-![](/reference_alignment/all-aligned-S288C.png)
+![](reference_alignment/all-aligned-S288C.png)
 
 
 ### Generate SV count figure  from `.SVs.tsv` output
@@ -63,4 +63,4 @@ module load R/3.6.3
 Rscript src/plot_SV_counts.R
 ```
 
-![](/reference_alignment/all-aligned-S288C.png)
+![](reference_alignment/all-aligned-S288C.png)
