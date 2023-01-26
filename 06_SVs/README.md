@@ -64,3 +64,4 @@ Rscript src/plot_SV_counts.R
 ```
 
 ![](reference_alignment/SV_counts.png)
+![](reference_alignment/SV_bins.png)

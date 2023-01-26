@@ -8,6 +8,30 @@ library(ggthemes)
 
 tsvfiles <- list.files(path='reference_alignment', pattern='*SVs.tsv', full.names=TRUE)
 
+chrLvls <- c(
+'chrI','chrII','chrIII','chrIV','chrV',
+'chrVI','chrVII','chrVIII','chrIX','chrX',
+'chrXI','chrXII','chrXIII','chrXIV','chrXV',
+'chrXVI','mitochondrion')
+
+strainLvls <- c(
+'BY','273614','CBS2888','CLIB219','CLIB413','I14','M22','PW5',
+'RM','Y10','YJM145','YJM454','YJM978','YJM981','YPS1009',
+'YPS163'
+)
+
+SVlvls <- c(
+'Deletion (mobile)',
+'Deletion (novel)',
+'Insertion (mobile)',
+'Insertion (novel)',
+'Duplication',
+'Inversion',
+'Contraction',
+'Translocation'
+)
+
+
 o <- foreach(f=tsvfiles, .combine='rbind') %do% {
     fread(f)
 }
@@ -50,30 +74,29 @@ o2 <- foreach(minSVsize=c(0,100,500,1000,5000,10000), .combine='rbind') %do% {
     }
 }
 
-g2 <- ggplot(o2, aes(x=bin, y=N)) + geom_point(aes(color=SV_type)) +
-facet_grid(minSVsize~binSize)
+o2[SV_type == 'deletion_mobile', SV_type := 'Deletion (mobile)']
+o2[SV_type == 'deletion_novel', SV_type := 'Deletion (novel)']
+o2[SV_type == 'insertion_mobile', SV_type := 'Insertion (mobile)']
+o2[SV_type == 'insertion_novel', SV_type := 'Insertion (novel)']
+o2[SV_type == 'duplication', SV_type := 'Duplication']
+o2[SV_type == 'inversion', SV_type := 'Inversion']
+o2[SV_type == 'contraction', SV_type := 'Contraction']
+o2[SV_type == 'transloc', SV_type := 'Translocation']
 
-g3 <- ggplot(o2[SV_type %like% 'insertion' | SV_type %like% 'deletion'], aes(x=bin, y=N)) +
-geom_point(aes(color=SV_type)) +
-facet_grid(minSVsize~binSize)
+o2[, SV_type := factor(SV_type, levels=SVlvls)]
 
+g.bins <- ggplot(o2[binSize==20000 & minSVsize==500], aes(x=bin, y=N)) + geom_point() +
+    facet_grid(SV_type~.) +
+    scale_x_continuous(breaks=c(0,5,10,15,20,25,30,35,40), 
+                       labels=c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8))+
+    theme_few() +
+    labs(x='Distance from nearest end of chromosome (Mb)',
+         y='Structural Variants (\u2265 500 bp) within 20 kilobase bin')
 
-
+ggsave(g.bins, file='reference_alignment/SV_bins.png', width=15, height=40, units='cm')
+ggsave(g.bins, file='reference_alignment/SV_bins.svg', width=15, height=40, units='cm')
 
 SVs <- dat[, .N, by=list(strain, query_chr, SV_type)]
-
-
-chrLvls <- c(
-'chrI','chrII','chrIII','chrIV','chrV',
-'chrVI','chrVII','chrVIII','chrIX','chrX',
-'chrXI','chrXII','chrXIII','chrXIV','chrXV',
-'chrXVI','mitochondrion')
-
-strainLvls <- c(
-'BY','273614','CBS2888','CLIB219','CLIB413','I14','M22','PW5',
-'RM','Y10','YJM145','YJM454','YJM978','YJM981','YPS1009',
-'YPS163'
-)
 
 
 SVs[, query_chr := factor(query_chr, levels=chrLvls)]
@@ -88,16 +111,7 @@ SVs[SV_type == 'inversion', SV_type := 'Inversion']
 SVs[SV_type == 'contraction', SV_type := 'Contraction']
 SVs[SV_type == 'transloc', SV_type := 'Translocation']
 
-SVlvls <- c(
-'Deletion (mobile)',
-'Deletion (novel)',
-'Insertion (mobile)',
-'Insertion (novel)',
-'Duplication',
-'Inversion',
-'Contraction',
-'Translocation'
-)
+
 SVs[, SV_type := factor(SV_type, levels=SVlvls)]
 
 fwrite(SVs, file='reference_alignment/SV_counts.tsv', quote=F, row.names=F, col.names=T, sep='\t')
