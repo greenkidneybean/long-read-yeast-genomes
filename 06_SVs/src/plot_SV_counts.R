@@ -26,9 +26,37 @@ dat[, c('strain', 'query_chr') := tstrsplit(query_chr, split='_')]
 setnames(dat, 'chr', 'ref_chr')
 
 dat2 <- copy(dat)
-dat2[, bin := cut(
+setkey(dat2, strain, query_chr)
 
-# get CHR lengths
+chr_lengths <- fread('assembly_lengths.tsv', header=TRUE)
+setnames(chr_lengths, c('strain','query_chr','query_chr_length'))
+setkey(chr_lengths, strain, query_chr)
+binSize <- 20000
+
+dat2 <- merge(dat2, chr_lengths)
+dat2[, dist_from_R_end := query_chr_length - query_stop]
+dat2[, dist_from_L_end := query_start]
+dat2[, idx := 1:.N]
+dat2[, min_dist_to_end := min(dist_from_R_end, dist_from_L_end), by=idx]
+
+o2 <- foreach(minSVsize=c(0,100,500,1000,5000,10000), .combine='rbind') %do% {
+    foreach(binSize=c(10000,20000,50000), .combine='rbind') %do% {
+        dat.tmp <- copy(dat2)
+        dat.tmp[, bin := trunc(min_dist_to_end /binSize) ]
+        dat.tmp.ag <- dat.tmp[size >= minSVsize, .N, by=list(SV_type,bin)]
+        dat.tmp.ag[, 'binSize' := binSize]
+        dat.tmp.ag[, 'minSVsize' := minSVsize][]
+        return(dat.tmp.ag)
+    }
+}
+
+g2 <- ggplot(o2, aes(x=bin, y=N)) + geom_point(aes(color=SV_type)) +
+facet_grid(minSVsize~binSize)
+
+g3 <- ggplot(o2[SV_type %like% 'insertion' | SV_type %like% 'deletion'], aes(x=bin, y=N)) +
+geom_point(aes(color=SV_type)) +
+facet_grid(minSVsize~binSize)
+
 
 
 
