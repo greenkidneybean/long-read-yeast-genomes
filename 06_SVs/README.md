@@ -39,22 +39,11 @@ sed 's/]$//g' > chromosome_ids.txt
 ```
 
 
+
 ### Generate alignment plot
 ```bash
 module load R/3.6.3
 Rscript src/plot_MUMandCo_alignment.R
 ```
 
-![](/06_SVs/reference_alignment/all-aligned-S288C.png)
-
-
-```
-## To align long-read genome assemblies to each other
-
-The script [`align_pairwise.sh`](src/align_pairwise.sh) generates `paf` using `minimap2` for all
-pairwise combinations of `fasta` within the [`assemblies`](assemblies) directory (ignoring alignment
-to itself). Alignments are done reciprocally (A to B and B to A) for `N*(N-1)` total alignments, 
-output to the [`pairwise_alignments`](pairwise_alignments) directory.
-
-
-
+![](/reference_alignment/all-aligned-S288C.png)
