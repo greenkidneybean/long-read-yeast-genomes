@@ -207,6 +207,8 @@ pacbio.blast <- cbind.data.frame(pacbio.blast, percent_id_whole)
 pacbio.blast$name <- paste(pacbio.blast$name, pacbio.blast$chr, sep = "_")
 
 pacbio.blast.top.hits <- do.call("rbind", lapply(split(pacbio.blast, pacbio.blast$name), function (x) x[order(x$percent_id_whole, decreasing = T)[1],]))
+save(pacbio.blast.top.hits, file = "~/data/pacbio RR genomes/output/orf_fastas/pacbio.blast.top.hits.R")
+load("~/data/pacbio RR genomes/output/orf_fastas/pacbio.blast.top.hits.R")
 
 pacbio.no.blast <- read.csv("~/data/pacbio RR genomes/input/michael_ORF_finding/unique-from-s288c.csv", stringsAsFactors = F)[-268,] #Row 268 is labelled as coming from "S288C", and I don't know if that means MSY25 or the reference genome. Doesn't look like a real gene, in any case
 
@@ -276,7 +278,7 @@ for (x in 1:16) {
   combined.gffs[[x]] <- combined.gffs[[x]][order(combined.gffs[[x]]$V1, as.numeric(combined.gffs[[x]]$V4)),]
 }
 
-#It turns out a lot of the "ORFs" don't have a start codon. The theory is that they're translating from alternate start codons, but I don't believe that's likely. Removing them below:
+#It turns out a lot of the "ORFs" don't have a start codon. The theory is that they're translating from alternate start codons, but I don't believe that's likely. Removing ORFs without a MET at least 100 codons from the end below:
 for (i in 1:16) {
   orfaas <- translate(DNAStringSet(sapply(which(combined.gffs[[i]]$V3 == "ORF"), function (x) dna.sequence.from.gff(paste0("MSY", 23 + i), gff.line = x, gff.file = combined.gffs[[i]], padding.l = -1, padding.r = 1))), no.init.codon = T)
   orfaas
@@ -293,6 +295,88 @@ for (x in 1:16) {
 combined.gffs <- list()
 for (i in 1:16) combined.gffs[[i]] <- read.delim(paste0("~/data/pacbio RR genomes/output/gffs/", grep(paste0("MSY", i + 23), list.files("~/data/pacbio RR genomes/output/gffs/"), value = T)), header = F, stringsAsFactors = F, quote = "", fill = F)
 names(combined.gffs) <- names(gff.files)
+
+#########
+#CROSS-CHECKING CONTENT WITH THE PETER PANGENOME
+#########
+
+genes <- list()
+for (i in 1:16) {
+  genes[[i]] <- DNAStringSet(sapply(which(combined.gffs[[i]]$V3 == "gene"), function (x) dna.sequence.from.gff(paste0("MSY", i + 23), x, gff.file = combined.gffs[[i]])))
+}
+
+for (i in 1:16) {
+  genes[[i]] <- c(genes[[i]], DNAStringSet(sapply(which(combined.gffs[[i]]$V3 == "ORF"), function (x) dna.sequence.from.gff(paste0("MSY", i + 23), x, gff.file = combined.gffs[[i]], padding.l = -1, padding.r = 1))))
+}
+
+for (i in 1:16) {
+  names(genes[[i]]) <- paste0("MSY", 
+                              i + 23, 
+                              c(rep("_gene", length(gene.classifications[[i]])), rep("_ORF", length(which(combined.gffs[[i]]$V3 == "ORF")))), 
+                              c(1:length(gene.classifications[[i]]), 1:length(which(combined.gffs[[i]]$V3 == "ORF"))), 
+                              "_", c(gene.classifications[[i]], rep("ORF", length(which(combined.gffs[[i]]$V3 == "ORF")))),
+                              "_", c(combined.gffs[[i]]$V10[which(combined.gffs[[i]]$V3 == "gene")], combined.gffs[[i]]$V10[which(combined.gffs[[i]]$V3 == "ORF")]))
+}
+
+for (i in 1:16) writeXStringSet(genes[[i]], filepath = paste0("~/data/pacbio RR genomes/output/orf_fastas/orfs_MSY", i + 23, ".fasta"))
+
+#Handed off to Michael to run the genes through blast against the Peter orfs, and vice versa. Note that we do not remove introns from gene bodies, just as Peter does not http://1002genomes.u-strasbg.fr/files/allORFs_pangenome.fasta.gz.
+
+peter_pan <- readDNAStringSet("~/data/pacbio RR genomes/input/michael_ORF_finding/allORFs_pangenome.fasta")
+
+#Filter out genes that are too short (<300 bp), don't start with an ATG, or have Ns in them. For the remainder, see how well they match genes in the 16 strains.
+peter_pan.kept <- peter_pan[1:1715]
+peter_pan.kept <- peter_pan.kept[which(substr(peter_pan.kept, 1, 3) == "ATG")]
+peter_pan.kept <- peter_pan.kept[which(lengths(peter_pan.kept) > 300)]
+peter_pan.kept <- peter_pan.kept[-grep("N|R|S|Y", peter_pan.kept)]
+
+panblast.tophits.by.strain <- read.csv("~/data/pacbio RR genomes/michael_ORF_finding/pangenome_checking/blastn_pangenome-to-16strainORFs_top-hits_v2.csv", stringsAsFactors = F, header = T)
+
+plot(c(rep(0.95, 16), rep(.99, 16)), c(apply(panblast.tophits.by.strain[which(panblast.tophits.by.strain.2$query %in% names(peter_pan.kept)), 2:17], 2, function (x) length(which(x > 0.95))), 
+                                       apply(panblast.tophits.by.strain[which(panblast.tophits.by.strain.2$query %in% names(peter_pan.kept)), 2:17], 2, function (x) length(which(x > 0.99)))), ylim = c(0, 170), xlim = c(0.95, 1),
+     ylab = "Number of pangenome genes from Peter et al. in strain genome", xlab = "BLAST percent match threshold, over whole ORF")
+text(c(rep(0.953, 16), rep(0.98, 16)), c(apply(panblast.tophits.by.strain[which(panblast.tophits.by.strain.2$query %in% names(peter_pan.kept)), 2:17], 2, function (x) length(which(x >= 0.95))), apply(panblast.tophits.by.strain[which(panblast.tophits.by.strain.2$query %in% names(peter_pan.kept)), 2:17], 2, function (x) length(which(x >= 0.99)))), rep(strains, 2))
+points(c(0.95, .99), c(length(which(apply(panblast.tophits.by.strain[which(panblast.tophits.by.strain.2$query %in% names(peter_pan.kept)), 2:17], 1, max) >= 0.95)), length(which(apply(panblast.tophits.by.strain[which(panblast.tophits.by.strain.2$query %in% names(peter_pan.kept)), 2:17], 1, max) >= .99))), col = "red", lwd = 2)
+
+
+#See how many strains each gene is in at a given threshold
+plot(sapply(1:16, function (y) length(which(apply(panblast.tophits.by.strain[which(panblast.tophits.by.strain.2$query %in% names(peter_pan.kept)), 2:17], 1, function (x) length(which(x >= 0.95))) == y))), col = "purple", type = "l",
+     ylab = "Number of pangenome genes", xlab = "Number of strains with the gene")
+lines(sapply(1:16, function (y) length(which(apply(panblast.tophits.by.strain[which(panblast.tophits.by.strain.2$query %in% names(peter_pan.kept)), 2:17], 1, function (x) length(which(x >= 0.99))) == y))), col = "orange")
+legend(10, 60, c("0.95", "0.99"), title = "BLAST match threshold", fill = c("purple", "orange"), border = F, bty = "n")
+
+######
+#MAKING A FILTERED LIST OF ORFs THAT REMOVES REPETITIVE REGIONS FROM THE CALCULATION OF THE ORF LENGTH
+######
+
+#I ran tandem repeat finder v 4.09.1 (downloaded 2/17/23 from https://github.com/Benson-Genomics-Lab/TRF/releases/download/v4.09.1/trf409.macosx)
+#with the following parameters: 2 5 7 80 10 50 2000 -l 10 -d on the orfs_MSY fasta files created above to create the .dat files used below.
+
+orfs.to.remove <- function (strain.name, max.repeat.length = 11, min.repeat.number = 6, orf.length.threshold = 100, directory = "~/data/pacbio RR genomes/input/michael_ORF_finding/tandem_repeat_finder_output/") { 
+  file.name <- grep(strain.name, list.files(directory), value = T)
+  strain.number <- grep(paste0(strain.name, "_"), paste0("MSY", 24:39, "_", strains, "_"))
+  read.delim2(paste0(directory, file.name), stringsAsFactors = F)[,1] -> trfdata
+  repeat.orfs <- grep("ORF", trfdata, value = T)[which(grep("ORF", trfdata)[-1] - grep("ORF", trfdata)[-length(grep("ORF", trfdata))] != 2)]
+  trfdata.short <- list()
+  for (x in 1:length(repeat.orfs)) {
+    trfdata.short[[x]] <- trfdata[(grep(repeat.orfs[x], trfdata) + 2):length(trfdata)]
+    trfdata.short[[x]] <- trfdata.short[[x]][1:(grep("Sequence", trfdata.short[[x]])[1] - 1)]
+    trfdata.short[[x]] <- data.frame(start = as.numeric(sapply(trfdata.short[[x]], function (x) strsplit(x, " ")[[1]][1])),
+                                     end = as.numeric(sapply(trfdata.short[[x]], function (x) strsplit(x, " ")[[1]][2])),
+                                     repeat.length = as.numeric(sapply(trfdata.short[[x]], function (x) strsplit(x, " ")[[1]][3])),
+                                     repeat.number = as.numeric(sapply(trfdata.short[[x]], function (x) strsplit(x, " ")[[1]][4])))
+    trfdata.short[[x]] <- trfdata.short[[x]][intersect(which(trfdata.short[[x]]$repeat.length < max.repeat.length + 1), which(trfdata.short[[x]]$repeat.number > min.repeat.number - 1)),]
+  }
+  total.repeat.length <- sapply(1:length(repeat.orfs), function (x) sum(size(interval_union(Intervals(cbind(trfdata.short[[x]]$start - 1, trfdata.short[[x]]$end))))))
+  rejected <- repeat.orfs[which((lengths(genes[[strain.number]][sapply(repeat.orfs, function (x) grep(substr(x, 11, nchar(x)), names(genes[[strain.number]])))]) - total.repeat.length) < orf.length.threshold)]
+  sapply(rejected, function (x) substr(x, 11, nchar(x)))
+}
+
+repetitive.orfs <- sapply(24:39, orfs.to.remove)
+
+for (x in 1:16) {
+  combined.gffs[[x]]$V3[which(combined.gffs[[x]]$V3 == "ORF")[sapply(repetitive.orfs[[x]], function (x) as.numeric(substr(x, 10, nchar(x) - 4)))]] <- "repetitive_ORF"
+}
 
 #######
 #DETERMINING WHETHER THE END OF THE ASSEMBLED CHROMOSOMES HAVE THE COMPONENTS THAT ENDS OF CHROMOSOMES ARE EXPECTED TO HAVE
@@ -406,6 +490,36 @@ for (i in 1:512) {
 #KNOWN MAJOR CHROMOSOMAL REARRANGEMENTS 
 #########
 
+plot.allele.frequency.by.chroms <- function (strain, chr.1, chr.2, type = "p", color = "black", parity.line.color = "blue") {
+  strain.msy.number <- if (is.numeric(strain) || grepl("MSY", strain)) as.numeric(substr(strain, nchar(strain) - 1, nchar(strain))) else grep(strain, strains) + 23
+  relevant.crosses <- if (strain.msy.number == 24) crosses[c(16, 1)] else crosses[strain.msy.number - c(24, 23)]
+  genos.cross1 <- fread(paste0("~/data/pacbio RR genomes/input/QTL_data/genotype_", relevant.crosses[1], ".tsv"))
+  genos.cross2 <- fread(paste0("~/data/pacbio RR genomes/input/QTL_data/genotype_", relevant.crosses[2], ".tsv"))
+  par(mfrow = c(2,2))
+  plot(sapply(grep(paste0("chr", as.roman(chr.1), "_"), colnames(genos.cross1), value = T), function (x) as.numeric(strsplit(x, "_")[[1]][2])), 
+       sapply(as.data.frame(genos.cross1)[,grep(paste0("chr", as.roman(chr.1), "_"), colnames(genos.cross1))], function (x) length(which(x == 1)))/nrow(genos.cross1), 
+       ylim = c(0, 1), xlab = paste("Position of variant allele on reference chr", as.roman(chr.1)), ylab = paste("Allele frequency in cross", strains[(strain.msy.number - 25) %% 16 + 1], "x", strains[(strain.msy.number - 24) %% 16 + 1]),
+       col = color, type = type)
+  abline(h = 0.5, col = parity.line.color, lty = 2)
+  plot(sapply(grep(paste0("chr", as.roman(chr.2), "_"), colnames(genos.cross1), value = T), function (x) as.numeric(strsplit(x, "_")[[1]][2])), 
+       sapply(as.data.frame(genos.cross1)[,grep(paste0("chr", as.roman(chr.2), "_"), colnames(genos.cross1))], function (x) length(which(x == 1)))/nrow(genos.cross1), 
+       ylim = c(0, 1), xlab = paste("Position of variant allele on reference chr", as.roman(chr.2)), ylab = paste("Allele frequency in cross", strains[(strain.msy.number - 25) %% 16 + 1], "x", strains[(strain.msy.number - 24) %% 16 + 1]),
+       col = color, type = type)
+  abline(h = 0.5, col = parity.line.color, lty = 2)
+  plot(sapply(grep(paste0("chr", as.roman(chr.1), "_"), colnames(genos.cross2), value = T), function (x) as.numeric(strsplit(x, "_")[[1]][2])), 
+       sapply(as.data.frame(genos.cross2)[,grep(paste0("chr", as.roman(chr.1), "_"), colnames(genos.cross2))], function (x) length(which(x == 1)))/nrow(genos.cross2), 
+       ylim = c(0, 1), xlab = paste("Position of variant allele on reference chr", as.roman(chr.1)), ylab = paste("Allele frequency in cross", strains[(strain.msy.number - 24) %% 16 + 1], "x", strains[(strain.msy.number - 23) %% 16 + 1]),
+       col = color, type = type)
+  abline(h = 0.5, col = parity.line.color, lty = 2)
+  plot(sapply(grep(paste0("chr", as.roman(chr.2), "_"), colnames(genos.cross2), value = T), function (x) as.numeric(strsplit(x, "_")[[1]][2])), 
+       sapply(as.data.frame(genos.cross2)[,grep(paste0("chr", as.roman(chr.2), "_"), colnames(genos.cross2))], function (x) length(which(x == 1)))/nrow(genos.cross2), 
+       ylim = c(0, 1), xlab = paste("Position of variant allele on reference chr", as.roman(chr.2)), ylab = paste("Allele frequency in cross", strains[(strain.msy.number - 24) %% 16 + 1], "x", strains[(strain.msy.number - 23) %% 16 + 1]),
+       col = color, type = type)
+  abline(h = 0.5, col = parity.line.color, lty = 2)
+  par(mfrow = c(1,1))
+}
+
+
 #3 of our strains (M22, YJM981, and YJM454) have previously been found to have translocations (PMID 24814147). Below, I checked whether the genes flanking the
 #known translocations are indeed found on the contigs we'd expect based on the translocation.
 
@@ -416,6 +530,10 @@ gff.files$msy24gff[grep("NOG1", gff.files$msy24gff$V9), -9] #chrXVI in ref genom
 gff.files$msy24gff[grep("SSU1", gff.files$msy24gff$V9), -9] #chrXVI in ref genome; contig tig00000012rc here
 gff.files$msy24gff[grep("YHL044W", gff.files$msy24gff$V9), -9] #chrVIII in ref genome; contig tig00000012rc here
 gff.files$msy24gff[grep("GLR1", gff.files$msy24gff$V9), -9] #chrXVI in ref genome; contig tig00000012rc here
+
+#As seen in Hou, 2014, Current Biology, allele frequencies skew at the left end of chr VIII and the middle of chr XVI.
+plot.chroms("M22", 8, 16)
+plot.chroms("YJM981", 8, 16) #Quite clearly, the diploid CBS2888/YJM981 had a serious mutation on the chr XVI from CBS2888 about 100 kb from the translocation junction point that precludes analysis of the allele frequencies.
 
 #Strain YJM981 has the same chrXVI/VIII translocation
 gff.files$msy37gff[grep("ECM34", gff.files$msy37gff$V9), -9] #chrVIII in ref genome; contig tig00000120  here
@@ -471,21 +589,170 @@ ref.gff.gene.IDs <- sapply(ref.gff$V9[which(ref.gff$V3 == "gene")], function (x)
 ref.gff.gene.IDs <- unname(ref.gff.gene.IDs)
 
 #lost genes (missing from table), diverged genes (cn = 1, homology 30-95%), retained genes (cn = 1, homology > 95%), additional copies (cn > 1, homology > 95%), additional diverged homologs (cn > 1, homology 30-95%), 
-#additional ORFs (orfFinder).
+#additional ORFs (orfFinder) minus those determined to be repetitive above.
 
-gene.classification.table <- rbind(sapply(gene.classifications, table), 
-                                   ORFs = sapply(combined.gffs, function (x) length(which(x$V3 == "ORF"))), 
-                                   absent = sapply(1:16, function (x) length(which(is.na(match(ref.gff.gene.IDs[-grep("orf_classification=Dubious", ref.gff$V9[which(ref.gff$V3 == "gene")])], gene.table[[x]]$ID))))))
+#Classify the ORFs found by ORFfinder using BLAST results run by Michael.
 
-#Make a barplot. I think make it first without the negative values but extend the ylim to c(-150, 6500) and then add in the negative values with add = T.
+blasthits <- read.csv("~/data/pacbio RR genomes/input/michael_ORF_finding/blastn_16strainORFs-to-pangenome.csv", stringsAsFactors = F, header = T)
+blasthits.orfs.to.ref <- blasthits[intersect(grep("ORF", blasthits$query), which(blasthits$t_orf_not_s288c == "False")),]
+gene.lengths <- cbind.data.frame(name = sapply(unlist(sapply(genes, names)), function (x) strsplit(x, "_chr")[[1]][1]), length = as.numeric(unlist(sapply(genes, lengths))))
 
-barplot(gene.classification.table[c("retained", "diverged", "additional.copy", "additional.homolog", "ORFs"),], ylim = c(-max(gene.classification.table[7,]), max(apply(gene.classification.table[-7,], 2, sum))), col = c("#CCCCCC", "gold", "forestgreen", "cyan", "#EAB3F3"), border = NA, ylab = "Count", axes = F, xaxt = 'n')
+blasthits.orfs.to.ref <- cbind.data.frame(blasthits.orfs.to.ref, percent_id_whole = sapply(1:nrow(blasthits.orfs.to.ref), function (x) blasthits.orfs.to.ref$alignment_length[x]/gene.lengths$length[which(gene.lengths$name == blasthits.orfs.to.ref$query[x])] * blasthits.orfs.to.ref$percent_id[x]/100))
+
+orf.classifications <- sapply(1:16, function (x) character(length(grep("ORF", combined.gffs[[x]]$V3))))
+
+dubious.genes <- c(unname(sapply(grep("orf_classification=Dubious;", ref.gff[which(ref.gff$V3 == "gene"),]$V9, value = T), function (x) strsplit(x, "ID=|;")[[1]][2])), 
+                   unname(sapply(grep("Ty", names(peter_pan), value = T), function (x) paste(strsplit(x, "-")[[1]][-1], collapse = "-"))))
+
+#####Basically, if the ORF matches a ref gene > 0.95 or > 0.3, it is that ref gene or a homolog, resp. Then classify it as additional or retained/diverged. If it matches nothing > 0.3, it is an ORF.
+
+for (y in 1:16) {
+  retained.genes <- character(0)
+  for (x in 1:length(grep("ORF", combined.gffs[[y]]$V3))) {
+    orf.name <- paste0("MSY", y + 23, "_ORF", x, "_ORF")
+    orf.end <- combined.gffs[[y]]$V5[grep("ORF", combined.gffs[[y]]$V3)][x]
+    orf.contig <- combined.gffs[[y]]$V1[grep("ORF", combined.gffs[[y]]$V3)][x]
+    if (combined.gffs[[y]]$V3[grep("ORF", combined.gffs[[y]]$V3)][x] == "repetitive_ORF") orf.classifications[[y]][x] <- "repetitive_ORF" else
+      if (orf.end <= (max(combined.gffs[[y]]$V5[min(which(combined.gffs[[y]]$V1 == orf.contig)):(grep("ORF", combined.gffs[[y]]$V3)[x] - 1)]) + 300)) orf.classifications[[y]][x] <- "dubious" else #Remove ORFs that are contained in other features or heavily overlap a feature that starts before them.
+        if (combined.gffs[[y]]$V4[grep("ORF", combined.gffs[[y]]$V3)][x] >= (min(combined.gffs[[y]]$V5[which(combined.gffs[[y]]$V1 == orf.contig)][which(combined.gffs[[y]]$V5[which(combined.gffs[[y]]$V1 == orf.contig)] > orf.end)]) - 300)) orf.classifications[[y]][x] <- "dubious" else #Remove ORFs that heavily overlap a feature that ends after them. 
+        if (is.na(match(orf.name, blasthits.orfs.to.ref$query))) orf.classifications[[y]][x] <- "ORF" else {
+        pid.whole <- max(blasthits.orfs.to.ref$percent_id_whole[which(blasthits.orfs.to.ref$query == orf.name)])
+        target <- blasthits.orfs.to.ref$target[which(blasthits.orfs.to.ref$query == orf.name)][which.max(blasthits.orfs.to.ref$percent_id_whole[which(blasthits.orfs.to.ref$query == orf.name)])]
+        target.num <- as.numeric(strsplit(target, "-")[[1]][1])
+        target.gene <- paste(strsplit(target, "-")[[1]][-1], collapse = "-")
+        if (target.gene %in% dubious.genes) orf.classifications[[y]][x] <- "dubious" else
+          if (pid.whole < 0.3) orf.classifications[[y]][x] <- "ORF" else
+            if (pid.whole >= 0.95) {
+                if (length(grep(strsplit(target, "-")[[1]][2], c(gene.table[[y]]$ID, retained.genes))) > 0) {
+                  orf.classifications[[y]][x] <- "additional.copy"
+                } else {
+                  orf.classifications[[y]][x] <- "retained"
+                  retained.genes <- c(retained.genes, target.gene) #Don't want to count it as retained if it shows up again
+                }
+            } else
+            if (pid.whole >= 0.3) {
+                if (length(grep(strsplit(target, "-")[[1]][2], c(gene.table[[y]]$ID, retained.genes))) > 0) {
+                  orf.classifications[[y]][x] <- "additional.homolog"
+                } else {
+                  orf.classifications[[y]][x] <- "diverged"
+                  retained.genes <- c(retained.genes, target.gene)
+                }
+            }
+      }
+   }
+}
+
+#Interestingly, while poking around validating the calls above, I saw that MSY27, 30, 31, 32, 35, 38, and 39 have a copy of the killer toxin gene KHR1 (ORF80, 81, 85, 74, 89, 90, and 84, resp.) See PMID 1368554. 
+#It is present in the Peter pangenome ORFs (1606-snap_masked-BBM_6-7244), but in a shortened form.
+#Similarly, there is a  2394 bp ORF present in many strains (2388 from the real ATG) and yet the Pangenome version of it is only 375 bp. 
+#The translation of our gene has homology to Tog1 throughout, so I don't think it is erroneously long - it seems the Pangenome version is erroneously short. 
+#The gene in our genomes: sapply(genes, function (x) x[intersect(which(lengths(x) == 2394), grep("ORF", names(x)))])
+#The pangenome ORF: 470-maker-253-BFM_3
+
+gene.classification.table <- rbind(sapply(1:16, function (x) table(c(gene.classifications[[x]], orf.classifications[[x]]))), 
+                                   absent = 5932 - apply(sapply(1:16, function (x) table(c(gene.classifications[[x]], orf.classifications[[x]])))[c(3, 7),], 2, sum))
+
+#We calculated "absent" as 5932 minus the number of retained and diverged genes. 5932 comes from there being 5925 genes represented in ref.gff.gene.IDs that are not dubious 
+#(length(ref.gff.gene.IDs[-grep("orf_classification=Dubious", ref.gff$V9[which(ref.gff$V3 == "gene")])])) plus 7 genes that showed up in the ORF characterization (YOL153C, YER109C, YIL167W, YLL016W, YFL056C, YCL074W, and YLL017W).
+
+#Make a barplot. 
+
+#Option 1: Absent reference genes are counted below the y = 0 line.
+barplot(gene.classification.table[c("retained", "diverged", "additional.copy", "additional.homolog", "ORF"),], ylim = c(-max(gene.classification.table["absent",]), max(apply(gene.classification.table[-8,], 2, sum))), col = c("#CCCCCC", "gold", "forestgreen", "cyan", "#EAB3F3"), border = NA, ylab = "Count", axes = F, xaxt = 'n')
 barplot(add = T, -gene.classification.table[7,], col = "darkorange", border = NA, axes = F, xaxt = 'n')
 axis(2, col = NA, col.ticks = "#606060")
 axis(1, las = 2, at = seq(.7, .7 + 1.2 * 15, by = 1.2), strains, tick = F)
 legend(4, 3000, c("Retained reference genes", "Genes diverged from reference", "Additional reference gene copies", "Additional diverged gene copies", "Additional ORFs", "Absent reference genes"),
        fill = c("#CCCCCC", "gold", "forestgreen", "cyan", "#EAB3F3", "darkorange"),
        border = NA, box.lwd = 0)
+
+#zoomed in
+barplot(gene.classification.table[c("diverged", "additional.copy", "additional.homolog", "ORF"),], ylim = c(-max(gene.classification.table["absent",]), max(apply(gene.classification.table[-c(1:3, 5),], 2, sum))), col = c("gold", "forestgreen", "cyan", "#EAB3F3"), border = NA, ylab = "Count", axes = F, xaxt = 'n')
+barplot(add = T, -gene.classification.table[7,], col = "darkorange", border = NA, axes = F, xaxt = 'n')
+axis(2, col = NA, col.ticks = "#606060")
+axis(1, las = 2, at = seq(.7, .7 + 1.2 * 15, by = 1.2), strains, tick = F)
+
+#Option 2: Absent reference genes are counted above the y = 0 line.
+barplot(gene.classification.table[c("absent", "retained", "diverged", "additional.copy", "additional.homolog", "ORF"),], ylim = c(0, max(apply(gene.classification.table[-4,], 2, sum))), col = c("darkorange", "#CCCCCC", "gold", "forestgreen", "cyan", "#EAB3F3"), border = NA, ylab = "Count", axes = F, xaxt = 'n')
+axis(2, col = NA, col.ticks = "#606060")
+axis(1, las = 2, at = seq(.7, .7 + 1.2 * 15, by = 1.2), strains, tick = F)
+legend(4, 3000, c("Retained reference genes", "Genes diverged from reference", "Additional reference gene copies", "Additional diverged gene copies", "Additional ORFs", "Absent reference genes"),
+       fill = c("#CCCCCC", "gold", "forestgreen", "cyan", "#EAB3F3", "darkorange"),
+       border = NA, box.lwd = 0)
+
+#zoomed in
+barplot(gene.classification.table[c("absent", "retained", "diverged", "additional.copy", "additional.homolog", "ORF"),] - c(0, 5700, 0, 0, 0, 0), ylim = c(0, max(apply(gene.classification.table[-c(4, 6, 7),], 2, sum)) + 100), col = c("darkorange", "#CCCCCC", "gold", "forestgreen", "cyan", "#EAB3F3"), border = NA, ylab = "Count", axes = F, xaxt = 'n')
+axis(2, col = NA, col.ticks = "#606060", labels = c(0, 100, 5900, 6000, 6100, 6200, 6300), at = seq(0, 600, by = 100))
+axis(1, las = 2, at = seq(.7, .7 + 1.2 * 15, by = 1.2), strains, tick = F)
+
+#########
+#POSITION OF PAN-GENOMIC VARIATION RELATIVE TO CHROMOSOME ENDS
+#########
+
+#Distinguish reference genes that are "retained.core" as distinct from "retained.pangenome" based on whether they are absent in any of the 16 strains.
+core.gene <- as.logical(1 - sapply(ref.gff.gene.IDs[-grep("orf_classification=Dubious", ref.gff$V9[which(ref.gff$V3 == "gene")])], function (y) max(is.na(sapply(gene.table, function (x) match(y, x$ID))))))
+
+#Assign genes to retained, retained.pangenome, additional.homolog, additional.copy, or diverged
+non.core.gene.IDs <- ref.gff.gene.IDs[-grep("orf_classification=Dubious", ref.gff$V9[which(ref.gff$V3 == "gene")])][which(core.gene == F)]
+
+gene.classifications.w.info <- gene.classifications
+for (i in 1:16) {
+  for (x in 1:length(gene.classifications.w.info[[i]])) {
+    if (gene.classifications.w.info[[i]][x] == "retained") {
+      if (gene.table[[i]]$ID[x] %in% non.core.gene.IDs) gene.classifications.w.info[[i]][x] <- "retained.pangenome" else gene.classifications.w.info[[i]][x] <- "retained.core"
+    }
+  }
+}
+
+#Add info about where the genes are on the contig
+for (i in 1:16) {
+  gene.classifications.w.info[[i]] <- cbind.data.frame(gene = gene.table[[i]]$ID, 
+                                                       contig = gff.files[[i]][which(gff.files[[i]]$V3 == "gene"),]$V1, 
+                                                       start = gff.files[[i]][which(gff.files[[i]]$V3 == "gene"),]$V4, 
+                                                       end = gff.files[[i]][which(gff.files[[i]]$V3 == "gene"),]$V5, 
+                                                       strand = gff.files[[i]][which(gff.files[[i]]$V3 == "gene"),]$V7, 
+                                                       classification = gene.classifications.w.info[[i]])
+}
+
+#Add additional ORFs
+
+for (i in 1:16) {
+  gene.classifications.w.info[[i]] <- rbind.data.frame(gene.classifications.w.info[[i]],
+                                                       data.frame(gene = rep("novel_ORF", length(grep("ORF", combined.gffs[[i]]$V3))),
+                                                                     contig = combined.gffs[[i]]$V1[grep("ORF", combined.gffs[[i]]$V3)],
+                                                                     start = combined.gffs[[i]]$V4[grep("ORF", combined.gffs[[i]]$V3)],
+                                                                     end = combined.gffs[[i]]$V5[grep("ORF", combined.gffs[[i]]$V3)],
+                                                                     strand = combined.gffs[[i]]$V7[grep("ORF", combined.gffs[[i]]$V3)],
+                                                                     classification = unname(sapply(orf.classifications[[i]], function (x) if (x == "retained") "retained.pangenome" else x))))
+}
+
+contig.lengths <- lapply(fastas, lengths)
+
+#Add contig length info
+for (i in 1:16) {
+  gene.classifications.w.info[[i]] <- cbind.data.frame(gene.classifications.w.info[[i]], contig.length = contig.lengths[[i]][gene.classifications.w.info[[i]]$contig])
+}
+
+#Remove the mitochondrial genes
+for (i in 1:16) {
+  gene.classifications.w.info[[i]]$contig.length <- sapply(gene.classifications.w.info[[i]]$contig.length, function (x) if (x > 100000) x else NA)
+}
+
+#Add in distance from closest chrom end. I'll take the center of the gene as its coordinate.
+
+for (i in 1:16) {
+  gene.classifications.w.info[[i]] <- cbind.data.frame(gene.classifications.w.info[[i]], dist.from.end = apply(gene.classifications.w.info[[i]], 1, function (x) min(mean(as.numeric(x[c(3,4)])), as.numeric(x[7]) - mean(as.numeric(x[c(3,4)])))))
+}
+
+par(mfrow = c(4, 4))
+for (x in 1:16) barplot(t(table(ceiling(gene.classifications.w.info[[x]]$dist.from.end/10000), gene.classifications.w.info[[x]]$classification)[1:5, c(7, 8, 3, 1, 2, 5)]), 
+                        main = strains[x],
+                        xlab = "Distance from chromosome end",
+                        ylab = "Count", ylim = c(0, 160),
+                        col = c("#CCCCCC", "#F6F6F6", "gold", "forestgreen", "cyan", "#EAB3F3"))
+par(mfrow = c(1, 1))
+
+save(gene.classifications.w.info, file = "~/data/pacbio RR genomes/output/gene.classifications.w.info.R") 
 
 #########
 #MALTOSE AND PARAQUAT LOD PLOTS
@@ -708,6 +975,18 @@ sapply(1:length(other.paraquat.genes.by.strain), function (y) {
 })
 dev.off()
 
+#Making a plot for the CUP locus.
+dna.sequence(fastas$MSY25, "tig00000018", 211516, 232488) #imported into benchling and annotated gene start and stop positions. They matched up with gff.files$msy25gff[which(gff.files$msy25gff$V3 == "gene"),][2994:3030,1:8]
+cup.genes <- read.csv("~/data/pacbio RR genomes/input/other_loci/cup locus.csv", stringsAsFactors = F, header = T)
+plot(1, type = "n", xlim = c(0, 25000), ylim = c(0, 20000), asp = 1)
+sapply(1:nrow(cup.genes), function (x) plot.gene(cup.genes$start[x], cup.genes$end[x]))
+
+#Making a plot for the YGR201C locus in YJM454. It has homology to CAM1, but just the glutathionine S-transferase domain, not the C-terminal elongation factor 1 gamma domain.
+gff.files$msy31gff[grep("ELP2|PCT1", gff.files$msy31gff$V9),]
+dna.sequence(fastas$MSY31, "tig00000007rcj37rc", 886561, 916436) #Annotated gene start and stop positions.
+ygr201c.genes <- read.csv("~/data/pacbio RR genomes/input/other_loci/YGR201C locus.csv", stringsAsFactors = F, header = T)
+plot(1, type = "n", xlim = c(0, 30000), ylim = c(0, 20000), asp = 1)
+sapply(1:nrow(ygr201c.genes), function (x) plot.gene(ygr201c.genes$start[x], ygr201c.genes$end[x], density = if (identical(ygr201c.genes$pseudo.[x], T)) 40 else NULL, col = "blue"))
 
 ########
 #SCATTERPLOTS OF SEGREGANT PHENOTYPES
@@ -767,10 +1046,14 @@ segregant.t.test("MSY35_MSY36", "raffinose", "chrIV", 9228, figure = T)
 segregant.t.test("MSY27_MSY28", "raffinose", "chrX", 734496, figure = T)
 dev.off()
 
+#Extra plot for supplementary figure showing that CLIB219 x M22 segregants that inherited the CLIB219 chromosome VII locus could grow on maltose only if they inherited the M22 chromosome II locus.
+segregant.t.test("MSY39_MSY24", "maltose", "chrII", 804475, "chrVII", 1083575, figure = T)
+
 ###########
-#MALR Percent ID PLOTS
+#MAL GENE Percent ID PLOTS
 ###########
 
+#MALR
 dnapid <- read.csv("~/data/pacbio RR genomes/input/maltose/chrVII-R MALR dna pid 221024.csv", row.names = 1, header = T, stringsAsFactors = F) #Generated by CLUSTAL omega from MALR sequences pulled from the benchling annotation mentioned above.
 
 #DNA percent ID
@@ -786,6 +1069,12 @@ sapply(strains.w.chrvii.malrs.dna, function (y) dnapid[grep(y, colnames(dnapid))
 dnapid.nodiag <- dnapid
 diag(dnapid.nodiag) <- NA
 median(unlist(sapply(strains.w.chrvii.malrs.dna, function (y) unlist(dnapid.nodiag[grep(y, colnames(dnapid)), grep(y, colnames(dnapid))]))), na.rm = T)
+
+#MALT
+malt.dnapid <- read.csv("~/data/pacbio RR genomes/input/maltose/malt dna pid.csv", row.names = 1, header = T, stringsAsFactors = F) #Generated by CLUSTAL omega
+pdf(file = "~/data/pacbio RR genomes/output/maltose/MALT dna pid.pdf", height = 11, width = 8.5)
+pheatmap(as.matrix(malt.dnapid), border_color = NA, cellwidth = 10, cellheight = 10, breaks = c(seq(min(dnapid), 99, length.out = 90), seq(99, 100, length.out = 12)[-1]))
+dev.off()
 
 ###########
 #Chr XI MALR chimerism graph
