@@ -1,0 +1,16 @@
+/vf/users/SBGE/pacbio_genomes/pacbio_fastas/MSY24_adjij_m3_assembly.fasta
+/vf/users/SBGE/pacbio_genomes/pacbio_fastas/MSY25_adjik_m4_assembly.fasta
+/vf/users/SBGE/pacbio_genomes/pacbio_fastas/MSY26_adjil_m3_assembly.fasta
+/vf/users/SBGE/pacbio_genomes/pacbio_fastas/MSY27_adjim_m1_assembly.fasta
+/vf/users/SBGE/pacbio_genomes/pacbio_fastas/MSY28_adjin_m2_assembly.fasta
+/vf/users/SBGE/pacbio_genomes/pacbio_fastas/MSY29_adjio_m1_assembly.fasta
+/vf/users/SBGE/pacbio_genomes/pacbio_fastas/MSY30_adjip_m1_assembly.fasta
+/vf/users/SBGE/pacbio_genomes/pacbio_fastas/MSY31_adjiq_m1_assembly.fasta
+/vf/users/SBGE/pacbio_genomes/pacbio_fastas/MSY32_adjir_m1_assembly.fasta
+/vf/users/SBGE/pacbio_genomes/pacbio_fastas/MSY33_adjis_m1_assembly.fasta
+/vf/users/SBGE/pacbio_genomes/pacbio_fastas/MSY34_adjit_m1_assembly.fasta
+/vf/users/SBGE/pacbio_genomes/pacbio_fastas/MSY35_adjiu_m1_assembly.fasta
+/vf/users/SBGE/pacbio_genomes/pacbio_fastas/MSY36_adjiv_m1_assembly.fasta
+/vf/users/SBGE/pacbio_genomes/pacbio_fastas/MSY37_adjiw_m2_assembly.fasta
+/vf/users/SBGE/pacbio_genomes/pacbio_fastas/MSY38_adjix_m1_assembly.fasta
+/vf/users/SBGE/pacbio_genomes/pacbio_fastas/MSY39_adjiy_m1_assembly.fasta

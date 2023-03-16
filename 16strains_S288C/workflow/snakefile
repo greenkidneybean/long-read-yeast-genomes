@@ -1,0 +1,128 @@
+# RUN: snakemake -j 10 --latency-wait 120 --cluster="sbatch"
+#  - based on Snakefile_s288c
+#  - generate BLAST results to be parsed by Jupyter notebooks
+# DAG: module load graphviz; snakemake --dag | dot -Tsvg > img/dag.svg
+# RULEGRAPH: module load graphviz; snakemake --rulegraph | dot -Tsvg > img/rule_graph.svg
+
+configfile: "workflow/config.yaml"
+
+REF_CHR = config['reference_chr']
+REF_ORF = config['reference_orf']
+SAMPLES = config['samples']
+
+ALL_SAMPLES_CHR = [REF_CHR] + SAMPLES
+ALL_SAMPLES_ORF = [REF_ORF] + SAMPLES
+ALL_SAMPLES = [REF_CHR] + [REF_ORF] + SAMPLES
+
+localrules: all
+rule all:
+    input:
+        #expand("data/unique_orfs/{all_samples_chr}_unique.fa", all_samples_chr=ALL_SAMPLES_CHR) # fastq > pear
+        #f"data/blastp_db/{REF_CHR}.fa",
+        #f"data/blastp_db/{REF_ORF}.fa",
+        expand("data/unique_orfs_S288C-chr/{all_samples_chr}_unique-orfs.fa", all_samples_chr=ALL_SAMPLES_CHR),
+        expand("data/unique_orfs_S288C-orf/{all_samples_orf}_unique-orfs.fa", all_samples_orf=ALL_SAMPLES_ORF)
+
+rule download_S288C_CHR_reference:
+    output: f"data/blastp_db/{REF_CHR}.fa"
+    run:
+        for chr in config['chr_files']:
+            shell(f"wget http://sgd-archive.yeastgenome.org/sequence/S288C_reference/chromosomes/fasta/{chr} -P data/reference/")
+        shell(f"cat data/reference/*.fsa >> data/reference{REF_CHR}.fa")
+        shell(f"mkdir -p data/blastp_db && cp data/reference/{REF_CHR}.fa data/blastp_db/")
+
+rule download_S288C_ORF_reference:
+    # download all reference s288c coding orfs
+    output: f"data/blastp_db/{REF_ORF}.fa"
+    shell:
+        """
+        wget http://sgd-archive.yeastgenome.org/sequence/S288C_reference/orf_protein/orf_trans_all.fasta.gz -P 'data/reference/'
+        gzip data/reference/orf_trans_all.fasta.gz
+        mkdir -p data/blastp_db && cp data/reference/orf_trans_all.fasta.gz {output}
+        """
+
+rule orffinder:
+    # strip 70aa orfs from all genomes, including reference, dump in blastdb folder
+    input: "data/16_genomes/{all_samples_chr}.fasta"
+    output: "data/blastp_db/{all_samples_chr}.fa"
+    params:
+        module="ORFfinder/0.4.3-sing-install",
+        min_orf_len=config['min_orf_len']
+    threads: 1
+    shell:
+        """
+        module load {params.module}
+        ORFfinder -outfmt=0 -ml {params.min_orf_len} -in {input} -out {output}
+        """
+
+rule make_blastp_db:
+    # creat blast db using orfs
+    input: expand("data/blastp_db/{all_samples}.fa", all_samples=ALL_SAMPLES)
+    output: multiext("data/blastp_db/{all_samples_chr}.fa", ".pdb",".phr",".pin",".pjs",".pot",".psq",".ptf",".pto")
+    params:
+        module="blast/2.13.0+"
+    threads: 1
+    shell:
+        """
+        module load {params.module}
+        makeblastdb -in {input} -dbtype prot
+        """
+
+rule blastp_chr:
+    # blast 16 genome ORFs against S288C CHR reference
+    input:
+        query="data/blastp_db/{all_samples_chr}.fa",
+        check_db=multiext("data/blastp_db/{all_samples_chr}.fa", ".pdb",".phr",".pin",".pjs",".pot",".psq",".ptf",".pto"),
+        db=f"data/blastp_db/{REF_CHR}.fa"
+    output: "data/blastp_S288C-chr/{all_samples_chr}.tsv"
+    params:
+        module="blast/2.13.0+"
+    threads: 4
+    shell:
+        """
+        module load {params.module}
+        blastp -num_threads {threads} -outfmt 6 -max_hsps=1 -db {input.db} -query {input.query} -out {output}
+        """
+
+rule unique_orfs_chr:
+    # python script to extract unique orfs from S288C Chr blastp
+    input:
+        orfs="data/blastp_db/{all_samples_chr}.fa",
+        blast_hits="data/blastp_S288C-chr/{all_samples_chr}.tsv"
+    output: "data/unique_orfs_S288C-chr/{all_samples_chr}_unique-orfs.fa"
+    params:
+        conda_env="16strains_env" # may not work
+    threads: 1
+    shell:
+        """
+        python scripts/unique_orfs.py -orfs {input.orfs} -blast {input.blast_hits} -out {output}
+        """
+rule blastp_orf:
+    # blast 16 genome ORFs against S288C ORF reference
+    input:
+        query="data/blastp_db/{all_samples_orf}.fa",
+        check_db=multiext("data/blastp_db/{all_samples_orf}.fa", ".pdb",".phr",".pin",".pjs",".pot",".psq",".ptf",".pto"),
+        db=f"data/blastp_db/{REF_ORF}.fa"
+    output: "data/blastp_S288C-orf/{all_samples_orf}.tsv"
+    params:
+        module="blast/2.13.0+"
+    threads: 4
+    shell:
+        """
+        module load {params.module}
+        blastp -num_threads {threads} -outfmt 6 -max_hsps=1 -db {input.db} -query {input.query} -out {output}
+        """
+
+rule unique_orfs_orf:
+    # python script to extract unique orfs S288C ORF blastp
+    input:
+        orfs="data/blastp_db/{all_samples_orf}.fa",
+        blast_hits="data/blastp_S288C-orf/{all_samples_orf}.tsv"
+    output: "data/unique_orfs_S288C-orf/{all_samples_orf}_unique-orfs.fa"
+    params:
+        conda_env="16strains_env" # may not work
+    threads: 1
+    shell:
+        """
+        python scripts/unique_orfs.py -orfs {input.orfs} -blast {input.blast_hits} -out {output}
+        """

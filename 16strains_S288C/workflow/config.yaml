@@ -1,0 +1,39 @@
+# test config for snakemake
+min_orf_len: 210 # 70aa
+samples:
+    - MSY24
+    - MSY25
+    - MSY26
+    - MSY27
+    - MSY28
+    - MSY29
+    - MSY30
+    - MSY31
+    - MSY32
+    - MSY33
+    - MSY34
+    - MSY35
+    - MSY36
+    - MSY37
+    - MSY38
+    - MSY39
+reference_chr: s288c
+chr_files:
+    - chrmt.fsa
+    - chr16.fsa
+    - chr15.fsa
+    - chr14.fsa
+    - chr13.fsa
+    - chr12.fsa
+    - chr11.fsa
+    - chr10.fsa
+    - chr09.fsa
+    - chr08.fsa
+    - chr07.fsa
+    - chr06.fsa
+    - chr05.fsa
+    - chr04.fsa
+    - chr03.fsa
+    - chr02.fsa
+    - chr01.fsa
+reference_orf: s288c-orf
