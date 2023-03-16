@@ -1,0 +1,190 @@
+# RUN: snakemake -j 50 --latency-wait 120 --cluster="sbatch"
+#   - use output for Jupyter notebooks to parse BLAST results
+# DAG: module load graphviz; snakemake --dag | dot -Tsvg > img/dag.svg
+# RULEGRAPH: module load graphviz; snakemake --rulegraph | dot -Tsvg > img/rule_graph.svg
+
+configfile: "workflow/config.yaml"
+
+SAMPLES = config['samples']
+
+rule all:
+    input:
+        expand("data/16_genomes/aa_fastas/aa_{samples}.fasta", samples=SAMPLES),
+        multiext("data/blastp_db/1011_pangenome/aa_pangenome.fasta", ".pdb",".phr",".pin",".pjs",".pot",".psq",".ptf",".pto"),
+        expand("data/blastp/{samples}.tsv", samples=SAMPLES),
+        multiext("data/blastn_db/1011_pangenome/allORFs_pangenome.fasta", ".ndb",".nhr",".nin",".njs",".not",".nsq",".ntf",".nto"),
+        expand("data/blastn/{samples}_pangenome.tsv", samples=SAMPLES),
+        multiext("data/blastn_db/16_genomes/allORFs_16genomes.fasta", ".ndb",".nhr",".nin",".njs",".not",".nsq",".ntf",".nto"),
+        expand("data/blastn/pangenome_{samples}.tsv", samples=SAMPLES), # blastn of pangenome ORFs against 16 strain ORFs
+        "data/blastn/pangenome_allORFs-pangenome.tsv", # blastn of pangenome ORFs against self
+        expand("data/blastn/{samples}_MSY25.tsv", samples=SAMPLES) # blastn of all 16 strain ORFs against MSY25 ORFs
+
+rule download_pangenome_orfs:
+    # download all reference s288c coding orfs
+    output: "data/1011_pangenome/allORFs_pangenome.fasta"
+    shell:
+        """
+        wget http://1002genomes.u-strasbg.fr/files/allORFs_pangenome.fasta.gz -P 'data/blastdb/'
+        gzip -d data/1011_pangenome/allORFs_pangenome.fasta.gz
+        """
+
+rule translate_16genomes:
+    # translate 16-genome orfs from DNA to AA seq
+    input: "data/16_genomes/orf_fastas/orfs_{SAMPLES}.fasta"
+    output: "data/16_genomes/aa_fastas/aa_{SAMPLES}.fasta"
+    shell: "python workflow/scripts/translate_fasta.py {input} {output}"
+
+rule translate_1011pangenome:
+    input: config['reference']
+    output: "data/1011_pangenome/aa_pangenome.fasta"
+    shell: "python workflow/scripts/translate_fasta.py {input} {output}"
+
+rule blastp_db_pangenome:
+    # creat blast db using orfs
+    input: "data/1011_pangenome/aa_pangenome.fasta"
+    output: multiext("data/blastp_db/1011_pangenome/aa_pangenome.fasta", ".pdb",".phr",".pin",".pjs",".pot",".psq",".ptf",".pto")
+    params:
+        module="blast/2.13.0+"
+    threads: 1
+    shell:
+        """
+        mkdir -p data/blastp_db/1011_pangenome
+        cp -u -p {input} data/blastp_db/1011_pangenome/aa_pangenome.fasta
+        module load {params.module}
+        makeblastdb -in data/blastp_db/1011_pangenome/aa_pangenome.fasta -dbtype prot
+        """
+
+rule blastp_16genomes:
+    # blastp each of the 16 genomes against pangenome db
+    input:
+        query="data/16_genomes/aa_fastas/aa_{SAMPLES}.fasta",
+        check_db=multiext("data/blastp_db/1011_pangenome/aa_pangenome.fasta", ".pdb",".phr",".pin",".pjs",".pot",".psq",".ptf",".pto"),
+        #db="data/blastp_db/1011_pangenome/aa_pangenome.fasta"
+    output: "data/blastp/{SAMPLES}.tsv"
+    params:
+        module="blast/2.13.0+"
+    threads: 4
+    shell:
+        """
+        module load {params.module}
+        blastp -num_threads {threads} -outfmt 6 -max_hsps=1 -db {input.db} -query {input.query} -out {output}
+        """
+
+rule blastn_db_pangenome:
+    # creat blastn db using pangenome orfs
+    input: "data/1011_pangenome/allORFs_pangenome.fasta"
+    output: multiext("data/blastn_db/1011_pangenome/allORFs_pangenome.fasta", ".ndb",".nhr",".nin",".njs",".not",".nsq",".ntf",".nto")
+    params:
+        module="blast/2.13.0+"
+    threads: 1
+    shell:
+        """
+        mkdir -p data/blastn_db/1011_pangenome
+        cp -u -p {input} data/blastn_db/1011_pangenome/allORFs_pangenome.fasta
+        module load {params.module}
+        makeblastdb -in data/blastn_db/1011_pangenome/allORFs_pangenome.fasta -dbtype nucl
+        """
+
+rule blastn_16genomes:
+    # blastn each of the 16 genomes against pangenome db
+    input:
+        query="data/16_genomes/orf_fastas/orfs_{SAMPLES}.fasta",
+        check_db=multiext("data/blastn_db/1011_pangenome/allORFs_pangenome.fasta", ".ndb",".nhr",".nin",".njs",".not",".nsq",".ntf",".nto"),
+        #db=f"data/blastn_db/1011_pangenome/allORFs_pangenome.fasta"
+    output: "data/blastn/{SAMPLES}_pangenome.tsv"
+    params:
+        module="blast/2.13.0+"
+    threads: 4
+    shell:
+        """
+        module load {params.module}
+        blastn -num_threads {threads} -outfmt 6 -max_hsps=1 -perc_identity 40 -task blastn -db {input.db} -query {input.query} -out {output}
+        """
+
+rule cat_16genomes:
+    # cat 16genomes into single fasta
+    input: expand("data/16_genomes/orf_fastas/orfs_{samples}.fasta", samples=SAMPLES)
+    output: "data/16_genomes/orf_fastas/allORFs_16genomes.fasta"
+    shell: "cat {input} >> {output}"
+
+rule blastn_db_cat16genomes:
+    # make a blastn db by cat the 16strains orfs
+    input: "data/16_genomes/orf_fastas/allORFs_16genomes.fasta"
+    output:
+        db_fasta="data/blastn_db/16_genomes/allORFs_16genomes.fasta",
+        check_db=multiext("data/blastn_db/16_genomes/allORFs_16genomes.fasta", ".ndb",".nhr",".nin",".njs",".not",".nsq",".ntf",".nto")
+    params:
+        module="blast/2.13.0+"
+    threads: 1
+    shell:
+        """
+        mkdir -p data/blastn_db/16_genomes
+        cp -u -p {input} data/blastn_db/16_genomes/allORFs_16genomes.fasta
+        module load {params.module}
+        makeblastdb -in data/blastn_db/16_genomes/allORFs_16genomes.fasta -dbtype nucl
+        """
+
+rule blastn_db_16orfs:
+    # make a blastn db for each of the 16strain orfs
+    input: "data/16_genomes/orf_fastas/orfs_{samples}.fasta"
+    output:
+        db_fasta="data/blastn_db/16_genomes/orfs_{samples}.fasta",
+        check_db=multiext("data/blastn_db/16_genomes/orfs_{samples}.fasta", ".ndb",".nhr",".nin",".njs",".not",".nsq",".ntf",".nto")
+    params:
+        module="blast/2.13.0+"
+    threads: 1
+    shell:
+        """
+        cp -u -p {input} data/blastn_db/16_genomes/.
+        module load {params.module}
+        makeblastdb -in {output.db_fasta} -dbtype nucl
+        """
+
+rule blastn_pangenome:
+    # blastn pangenome orfs against each of the 16 strain ORF blastn_db
+    input:
+        query="data/1011_pangenome/allORFs_pangenome.fasta",
+        check_db=multiext("data/blastn_db/16_genomes/orfs_{samples}.fasta", ".ndb",".nhr",".nin",".njs",".not",".nsq",".ntf",".nto"),
+        db="data/blastn_db/16_genomes/orfs_{samples}.fasta"
+    output: "data/blastn/pangenome_{samples}.tsv"
+    params:
+        module="blast/2.13.0+"
+    threads: 4
+    shell:
+        """
+        module load {params.module}
+        blastn -num_threads {threads} -outfmt 6 -max_hsps=1 -perc_identity 40 -task blastn -db {input.db} -query {input.query} -out {output}
+        """
+
+rule blastn_pangenome_self:
+    # blastn the pangenome orfs against itself
+    # looking for threshold/cutoff of similar genes (choice of representative allele in the pangenome)
+    input:
+        query="data/1011_pangenome/allORFs_pangenome.fasta",
+        check_db=multiext("data/blastn_db/1011_pangenome/allORFs_pangenome.fasta", ".ndb",".nhr",".nin",".njs",".not",".nsq",".ntf",".nto"),
+        #db=f"data/blastn_db/1011_pangenome/allORFs_pangenome.fasta"
+    output: "data/blastn/pangenome_allORFs-pangenome.tsv"
+    params:
+        module="blast/2.13.0+"
+    threads: 4
+    shell:
+        """
+        module load {params.module}
+        blastn -num_threads {threads} -outfmt 6 -max_hsps=1 -perc_identity 40 -task blastn -db {input.db} -query {input.query} -out {output}
+        """
+
+rule blastn_16strains_MSY25:
+    # blastn each of the 16strain ORFs against the MSY25 (S288C) ORF blastn db
+    input:
+        query="data/16_genomes/orf_fastas/orfs_{SAMPLES}.fasta",
+        check_db=multiext("data/blastn_db/16_genomes/orfs_MSY25.fasta", ".ndb",".nhr",".nin",".njs",".not",".nsq",".ntf",".nto"),
+        db=f"data/blastn_db/16_genomes/orfs_MSY25.fasta"
+    output: "data/blastn/{SAMPLES}_MSY25.tsv"
+    params:
+        module="blast/2.13.0+"
+    threads: 4
+    shell:
+        """
+        module load {params.module}
+        blastn -num_threads {threads} -outfmt 6 -max_hsps=1 -perc_identity 40 -task blastn -db {input.db} -query {input.query} -out {output}
+        """

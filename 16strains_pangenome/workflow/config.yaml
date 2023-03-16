@@ -1,0 +1,18 @@
+samples:
+  - MSY24
+  - MSY25
+  - MSY26
+  - MSY27
+  - MSY28
+  - MSY29
+  - MSY30
+  - MSY31
+  - MSY32
+  - MSY33
+  - MSY34
+  - MSY35
+  - MSY36
+  - MSY37
+  - MSY38
+  - MSY39
+reference: data/1011_pangenome/allORFs_pangenome.fasta
