@@ -19,44 +19,44 @@ Quickstart for Biowulf HPC:
   jupyter lab .
   ```
 
-16strains_pangenome
-├── data
-│   └── 16_genomes
-│       └── orf_fastas
-│           ├── allORFs_16genomes.fasta
-│           ├── orfs_MSY24.fasta
-│           ├── orfs_MSY25.fasta
-│           ├── orfs_MSY26.fasta
-│           ├── orfs_MSY27.fasta
-│           ├── orfs_MSY28.fasta
-│           ├── orfs_MSY29.fasta
-│           ├── orfs_MSY30.fasta
-│           ├── orfs_MSY31.fasta
-│           ├── orfs_MSY32.fasta
-│           ├── orfs_MSY33.fasta
-│           ├── orfs_MSY34.fasta
-│           ├── orfs_MSY35.fasta
-│           ├── orfs_MSY36.fasta
-│           ├── orfs_MSY37.fasta
-│           ├── orfs_MSY38.fasta
-│           └── orfs_MSY39.fasta
-├── env
-│   ├── environment.yml
-│   └── spec-file.txt
-├── img
-│   ├── dag.svg
-│   └── rule_graph.svg
-├── readme.md
-└── workflow
-    ├── config.yaml
-    ├── nb
-    │   ├── 0_16genomes_check-inframe.ipynb
-    │   ├── 0_pangenome_check-inframe.ipynb
-    │   ├── 1_blastn_16genomes_top-percent-whole.ipynb
-    │   ├── 2a_blastn_16strainORFs-to-pangenome_top-percent-whole.ipynb
-    │   ├── 2b_blastn_pangenome_top-percent-whole.ipynb
-    │   ├── 2c_blastn_pangenome-pangenome.ipynb
-    │   └── 3_plot_pangenome-figure.ipynb
-    ├── scripts
-    │   └── translate_fasta.py
-    └── Snakefile
+16strains_pangenome  
+├── data  
+│   └── 16_genomes  
+│       └── orf_fastas  
+│           ├── allORFs_16genomes.fasta  
+│           ├── orfs_MSY24.fasta  
+│           ├── orfs_MSY25.fasta  
+│           ├── orfs_MSY26.fasta  
+│           ├── orfs_MSY27.fasta  
+│           ├── orfs_MSY28.fasta  
+│           ├── orfs_MSY29.fasta  
+│           ├── orfs_MSY30.fasta  
+│           ├── orfs_MSY31.fasta  
+│           ├── orfs_MSY32.fasta  
+│           ├── orfs_MSY33.fasta  
+│           ├── orfs_MSY34.fasta  
+│           ├── orfs_MSY35.fasta  
+│           ├── orfs_MSY36.fasta  
+│           ├── orfs_MSY37.fasta  
+│           ├── orfs_MSY38.fasta  
+│           └── orfs_MSY39.fasta  
+├── env  
+│   ├── environment.yml  
+│   └── spec-file.txt  
+├── img  
+│   ├── dag.svg  
+│   └── rule_graph.svg  
+├── readme.md  
+└── workflow  
+    ├── config.yaml  
+    ├── nb  
+    │   ├── 0_16genomes_check-inframe.ipynb  
+    │   ├── 0_pangenome_check-inframe.ipynb  
+    │   ├── 1_blastn_16genomes_top-percent-whole.ipynb  
+    │   ├── 2a_blastn_16strainORFs-to-pangenome_top-percent-whole.ipynb  
+    │   ├── 2b_blastn_pangenome_top-percent-whole.ipynb  
+    │   ├── 2c_blastn_pangenome-pangenome.ipynb  
+    │   └── 3_plot_pangenome-figure.ipynb  
+    ├── scripts  
+    │   └── translate_fasta.py  
+    └── Snakefile  
