@@ -19,45 +19,45 @@ Quickstart for Biowulf HPC:
   jupyter lab .
   ```
 
-16strains_S288C
-├── data
-│   └── 16_genomes
-│       ├── MSY24.fasta
-│       ├── MSY25.fasta
-│       ├── MSY26.fasta
-│       ├── MSY27.fasta
-│       ├── MSY28.fasta
-│       ├── MSY29.fasta
-│       ├── MSY30.fasta
-│       ├── MSY31.fasta
-│       ├── MSY32.fasta
-│       ├── MSY33.fasta
-│       ├── MSY34.fasta
-│       ├── MSY35.fasta
-│       ├── MSY36.fasta
-│       ├── MSY37.fasta
-│       ├── MSY38.fasta
-│       └── MSY39.fasta
-├── env
-│   ├── environment.yml
-│   └── spec-file.txt
-├── img
-│   ├── dag.svg
-│   └── rule_graph.svg
-├── readme.md
-└── workflow
-    ├── config.yaml
-    ├── nb
-    │   ├── 2a_ref-blast-hits-table.ipynb
-    │   ├── 2b_s288c-orf_blast-hits-table.ipynb
-    │   ├── 3a_unique-from-ref.ipynb
-    │   ├── 4_blast-gene-hits-concat.ipynb
-    │   └── extract_unique_orfs.ipynb
-    ├── scripts
-    │   ├── blastdb.sh
-    │   ├── blast.sh
-    │   ├── clean_fastas.sh
-    │   ├── genomes.txt
-    │   ├── orffinder.sh
-    │   └── unique_orfs.py
-    └── snakefile
+16strains_S288C  
+├── data  
+│   └── 16_genomes  
+│       ├── MSY24.fasta  
+│       ├── MSY25.fasta  
+│       ├── MSY26.fasta  
+│       ├── MSY27.fasta  
+│       ├── MSY28.fasta  
+│       ├── MSY29.fasta  
+│       ├── MSY30.fasta  
+│       ├── MSY31.fasta  
+│       ├── MSY32.fasta  
+│       ├── MSY33.fasta  
+│       ├── MSY34.fasta  
+│       ├── MSY35.fasta  
+│       ├── MSY36.fasta  
+│       ├── MSY37.fasta  
+│       ├── MSY38.fasta  
+│       └── MSY39.fasta  
+├── env  
+│   ├── environment.yml  
+│   └── spec-file.txt  
+├── img  
+│   ├── dag.svg  
+│   └── rule_graph.svg  
+├── readme.md  
+└── workflow  
+    ├── config.yaml  
+    ├── nb  
+    │   ├── 2a_ref-blast-hits-table.ipynb  
+    │   ├── 2b_s288c-orf_blast-hits-table.ipynb  
+    │   ├── 3a_unique-from-ref.ipynb  
+    │   ├── 4_blast-gene-hits-concat.ipynb  
+    │   └── extract_unique_orfs.ipynb  
+    ├── scripts  
+    │   ├── blastdb.sh  
+    │   ├── blast.sh  
+    │   ├── clean_fastas.sh  
+    │   ├── genomes.txt  
+    │   ├── orffinder.sh  
+    │   └── unique_orfs.py  
+    └── snakefile  
